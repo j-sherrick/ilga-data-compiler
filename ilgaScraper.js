@@ -67,6 +67,6 @@ let chapters = getChapterTopics(index);
 let chapterNumbers = getChapterNumbers(index);
 
 
-// console.log(topics, chapters, chapterNumbers);
+console.log(topics, chapters, chapterNumbers);
 
 await browser.close();
