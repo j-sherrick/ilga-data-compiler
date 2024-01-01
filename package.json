@@ -1,0 +1,41 @@
+{
+  "name": "ilga-statute-compiler",
+  "version": "1.0.0",
+  "description": "A web scraping project to collect the entirety of the Illinois Compiled Statutes (ILCS) from the Illinois General Assembly website (ilga.gov)",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/j-sherrick/ilga-statute-compiler.git"
+  },
+  "keywords": [
+    "puppeteer",
+    "nodejs",
+    "javascript",
+    "web-scraping",
+    "web-crawler",
+    "web",
+    "scraping",
+    "crawler",
+    "data",
+    "collection",
+    "summarization",
+    "illinois",
+    "legal",
+    "state",
+    "laws",
+    "statutes",
+    "public"
+  ],
+  "author": "Jason Sherrick",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/j-sherrick/ilga-statute-compiler/issues"
+  },
+  "homepage": "https://github.com/j-sherrick/ilga-statute-compiler#readme",
+  "dependencies": {
+    "puppeteer": "^21.6.1"
+  }
+}
