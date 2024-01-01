@@ -56,6 +56,13 @@ function getChapterTopics(index) {
 }
 
 
+export class ILCS {
+    constructor() {
+        this.browser;
+        this.page;
+    }
+}
+
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
 await page.goto('https://www.ilga.gov/legislation/ilcs/ilcs.asp');
