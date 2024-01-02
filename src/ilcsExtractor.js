@@ -5,9 +5,9 @@ class ILCS {
         this.chapterIndex = null;
     }
 
-    BASE_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs.asp';
+    static BASE_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs.asp';
 
-    MAJOR_TOPICS = {
+    static MAJOR_TOPICS = {
         '00': 'GOVERNMENT',
         '100': 'EDUCATION',
         '200': 'REGULATION',
@@ -23,18 +23,18 @@ class ILCS {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
 
-        await page.goto(BASE_URL);
+        await page.goto(ILCS.BASE_URL);
 
         const pageUElement = await page.$('td ul');
-        if (!hasAllMajorTopics(pageUElement)) return null;
+        if (!this.hasAllMajorTopics(pageUElement)) return null;
 
         
         
         let tempChapterIndex = {};
         let currentSeries = '';
         const uElementChildren = pageUElement.children;
-        children.forEach(child => {
-            const topic = elementHasTopic(child);
+        uElementChildren.forEach(child => {
+            const topic = this.elementHasTopic(child);
             if (topic) {
                 currentSeries = topic.number;
                 tempChapterIndex[currentSeries] = {
@@ -42,7 +42,7 @@ class ILCS {
                     chapters: []
                 };
             } else {
-                const chapter = elementHasChapter(child);
+                const chapter = this.elementHasChapter(child);
                 if (chapter) {
                     tempChapterIndex[currentSeries].chapters.push(chapter);
                 }
@@ -62,11 +62,11 @@ class ILCS {
     *          or null if the text does not contain a major topic
     */
     elementHasTopic(el) {
-        for (const topic in MAJOR_TOPICS) {
-            if (el.innerText.includes(MAJOR_TOPICS[topic])) {
+        for (const topic in ILCS.MAJOR_TOPICS) {
+            if (el.innerText.includes(ILCS.MAJOR_TOPICS[topic])) {
                 return {
                     number: topic,
-                    name: MAJOR_TOPICS[topic]
+                    name: ILCS.MAJOR_TOPICS[topic]
                 };
             }
         }
@@ -102,10 +102,10 @@ class ILCS {
      * 
      * @returns { Boolean } true if `el` contains all of the ILCS major topics, false otherwise
     */
-    hasAllMajorTopics(el) {
-        const elInnerText = el.innerText;
-        for (const topic in MAJOR_TOPICS) {
-            if (!elInnerText.includes(MAJOR_TOPICS[topic])) {
+    async hasAllMajorTopics(el) {
+        const elInnerText = await el.evaluate(element => element.innerText);
+        for (const series in ILCS.MAJOR_TOPICS) {
+            if (!elInnerText.includes(ILCS.MAJOR_TOPICS[series])) {
                 return false;
             }
         }
@@ -117,7 +117,7 @@ class ILCS {
 export default ILCS;
 
 const ilcs = new ILCS();
-const index = ilcs.init();
+const index = await ilcs.init();
 for(const chapter in index) {
     console.log(chapter);
 }

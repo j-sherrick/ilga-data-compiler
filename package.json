@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "A web scraping project to collect the entirety of the Illinois Compiled Statutes (ILCS) from the Illinois General Assembly website (ilga.gov)",
   "main": "app.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node src/ilcsExtractor.js"
   },
   "repository": {
     "type": "git",
