@@ -1,99 +1,111 @@
 import puppeteer, { Page } from 'puppeteer';
 
-class ILCS {
-    constructor() {
-        this.chapterIndex = null;
-    }
+class ILGADataExtractor {
 
     static BASE_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs.asp';
 
-    static MAJOR_TOPICS = {
-        '00': 'GOVERNMENT',
-        '100': 'EDUCATION',
-        '200': 'REGULATION',
-        '300': 'HUMAN NEEDS',
-        '400': 'HEALTH AND SAFETY',
-        '500': 'AGRICULTURE AND CONSERVATION',
-        '600': 'TRANSPORTATION',
-        '700': 'RIGHTS AND REMEDIES',
-        '800': 'BUSINESS AND EMPLOYMENT'
-    };
+    static MAJOR_TOPIC_NAMES = [
+        'GOVERNMENT',
+        'EDUCATION',
+        'REGULATION',
+        'HUMAN NEEDS',
+        'HEALTH AND SAFETY',
+        'AGRICULTURE AND CONSERVATION',
+        'TRANSPORTATION',
+        'RIGHTS AND REMEDIES',
+        'BUSINESS AND EMPLOYMENT'
+    ];
 
-    async init() {
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
+    static MAJOR_TOPIC_NUMBERS = [
+        '00',
+        '100',
+        '200',
+        '300',
+        '400',
+        '500',
+        '600',
+        '700',
+        '800'
+    ];
 
-        await page.goto(ILCS.BASE_URL);
+    static SERIES = 0;
+    static NUMBER = 0;
+    static NAME = 1;
+    static URL = 2;
 
-        const pageUElement = await page.$('td ul');
-        if (!this.hasAllMajorTopics(pageUElement)) return null;
+    constructor() {
+        this.getChaptersFromList = this.getChaptersFromList.bind(this);
+        this.elementHasTopic = this.hasTopic.bind(this);
+        this.elementHasChapter = this.hasChapter.bind(this);
+        this.listHasTopics = this.listHasTopics.bind(this);
+        this.init = this.init.bind(this);
 
-        
-        
-        let tempChapterIndex = {};
-        let currentSeries = '';
-        const uElementChildren = pageUElement.children;
-        uElementChildren.forEach(child => {
-            const topic = this.elementHasTopic(child);
-            if (topic) {
-                currentSeries = topic.number;
-                tempChapterIndex[currentSeries] = {
-                    topic: topic.name,
-                    chapters: []
-                };
-            } else {
-                const chapter = this.elementHasChapter(child);
-                if (chapter) {
-                    tempChapterIndex[currentSeries].chapters.push(chapter);
-                }
-            }
-        });
-
-        this.chapterIndex = tempChapterIndex;
-
-        await browser.close();
+        this.chapterIndex = null;
     }
 
 
     /**
     * @param { Element } el child element of the <ul> of chapters located at BASE_URL
     * 
-    * @returns an object representing a major topic's 100 series and name in the format { number: '00', name: 'GOVERNMENT' }
-    *          or null if the text does not contain a major topic
+    * @returns { Boolean } true if the element contains any of the major topics, false otherwise
     */
-    elementHasTopic(el) {
-        for (const topic in ILCS.MAJOR_TOPICS) {
-            if (el.innerText.includes(ILCS.MAJOR_TOPICS[topic])) {
-                return {
-                    number: topic,
-                    name: ILCS.MAJOR_TOPICS[topic]
-                };
+    hasTopic(el) {
+        for (const topic in ILGADataExtractor.MAJOR_TOPIC_NAMES) {
+            if (el.innerText.includes(topic)) {
+                return true; 
             }
         }
+        return false;
+    }
 
+    /**
+     * 
+     * @param { Element } el child element of the <ul> of chapters located at BASE_URL
+     *  
+     * @returns { Array } with the format [ '00', 'GOVERNMENT' ] 
+     */
+    getTopic(el) {
+        for (let i = 0; i < ILGADataExtractor.MAJOR_TOPIC_NAMES.length; i++) {
+            if (el.innerText.includes(ILGADataExtractor.MAJOR_TOPIC_NAMES[i])) {
+                return [ILGADataExtractor.MAJOR_TOPIC_NUMBERS[i], ILGADataExtractor.MAJOR_TOPIC_NAMES[i]];
+            }
+        }
         return null;
     }
 
     /**
-     * @param { Element } el assumed to be a child of the element returned by running querySelector('td ul') on BASE_URL
+     * @param { Element } el child of the <ul> of chapters located at BASE_URL
      * 
-     * @returns chapter metadata object with the shape { chapterNumber, chapterName, chapterURL }
-     *          null if `el.innerText` does not contain a chapter number
-     *          null if `el.innerText` was null to begin with
+     * @returns { Boolean } true if the word 'CHAPTER' is in the innerText of `el`, false otherwise
     */
-    elementHasChapter(el) {
-        const chapterNumberRegEx = /d{1,3}/; // we should be safe assuming any sequence of 1-3 digits is a chapter number
-        const chapterNumber = el.innerText.match(chapterNumberRegEx)[0];
-        if (chapterNumber) {
-            const chapterURL = el.querySelector('a').href;
-            const chapterName = el.innerText.replace( ('CHAPTER ' + chapterNumber), '').trim();
+    hasChapter(el) {
+        return el.innerText.includes('CHAPTER');
+    }
 
-            return { chapterNumber, chapterName, chapterURL };
+    /**
+     * 
+     * @param { Element } el child of the <ul> of chapters located at BASE_URL
+     * 
+     * @returns { Array } with the format:
+     * 
+     *             [
+     *                '105',
+     *                'SCHOOLS',
+     *                'https://www.ilga.gov/legislation/ilcs/ilcs2.asp?ChapterID=17'
+     *              ] 
+     */
+    getChapter(el) {
+        const chapterNumberRegEx = /d{1,3}/; // we should be safe assuming any sequence of 1-3 digits is a chapter number
+        const number = el.innerText.match(chapterNumberRegEx)[0];
+        if (number) {
+            const url = el.querySelector('a').href;
+            const name = el.innerText.replace( ('CHAPTER ' + number), '').trim();
+
+            return [number, name, url];
         }
 
         return null;
     }
-
 
     /**
      * @param { HTMLUListElement } el the Element returned from running querySelector('td ul') on BASE_URL. Assumed to
@@ -102,22 +114,62 @@ class ILCS {
      * 
      * @returns { Boolean } true if `el` contains all of the ILCS major topics, false otherwise
     */
-    async hasAllMajorTopics(el) {
+    async listHasTopics(el) {
         const elInnerText = await el.evaluate(element => element.innerText);
-        for (const series in ILCS.MAJOR_TOPICS) {
-            if (!elInnerText.includes(ILCS.MAJOR_TOPICS[series])) {
+        for (const topic in ILGADataExtractor.MAJOR_TOPIC_NAMES) {
+            if (!elInnerText.includes(topic)) {
                 return false;
             }
         }
         return true;
     }
+
+    getChaptersFromList(list) {
+        const uElementChildren = list.children;
+        let majorTopics = {};
+        let series = '';
+
+        for (const child of uElementChildren) {
+            const topic = this.hasTopic(child);
+            if (topic) {
+                series = topic[SERIES];
+                majorTopics[series] = {
+                    name: topic[NAME],
+                    chapters: []
+                };
+            }
+            else {
+                const chapter = this.hasChapter(child);
+                if (chapter) {
+                    majorTopics[series].chapters.push(chapter);
+                }
+            }
+        }
+
+        return JSON.stringify(majorTopics);
+    }
+
+    async init() {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        const response = await page.goto(ILGADataExtractor.BASE_URL);
+        console.log(response.status());
+
+        const pageUElement = await page.waitForSelector('td ul');
+        if (!this.listHasTopics(pageUElement)) return null;
+        
+        const result = await pageUElement.evaluate(this.getChaptersFromList);
+        console.log(result);
+
+        await browser.close();
+    }
 }
 
 
-export default ILCS;
+export default ILGADataExtractor;
 
-const ilcs = new ILCS();
-const index = await ilcs.init();
-for(const chapter in index) {
+const ilcs = new ILGADataExtractor();
+const statutes = JSON.parse(await ilcs.init());
+for(const chapter in statutes) {
     console.log(chapter);
 }
