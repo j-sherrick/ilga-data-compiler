@@ -81,52 +81,13 @@ function hasChapter(el) {
  */
 function getChapter(el) {
     const chapterNumberRegEx = /d{1,3}/; // we should be safe assuming any sequence of 1-3 digits is a chapter number
-    const number = el.innerText.match(chapterNumberRegEx)[0];
-    if (number) {
-        const url = el.querySelector('a').href;
-        const name = el.innerText.replace( ('CHAPTER ' + number), '').trim();
-        return [number, name, url];
+    const chapterNumber = el.innerText.match(chapterNumberRegEx)[0];
+    if (!chapterNumber) {
+        return null;
     }
-    return null;
-}
-/**
- * @param { HTMLUListElement } el the Element returned from running querySelector('td ul') on BASE_URL. Assumed to
- *                       at least not be null. Makes no assumptions about whether the child element is in a <li> or not.
- *                       It only cares that the innerText of `el
- * 
- * @returns { Boolean } true if `el` contains all of the ILCS major topics, false otherwise
-*/
-async function listHasTopics(el) {
-    const elInnerText = await el.evaluate(element => element.innerText);
-    for (const topic in ILGADataExtractor.MAJOR_TOPIC_NAMES) {
-        if (!elInnerText.includes(topic)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function getChaptersFromList(list) {
-    const uElementChildren = list.children;
-    let majorTopics = {};
-    let series = '';
-    for (const child of uElementChildren) {
-        const topic = this.hasTopic(child);
-        if (topic) {
-            series = topic[SERIES];
-            majorTopics[series] = {
-                name: topic[NAME],
-                chapters: []
-            };
-        }
-        else {
-            const chapter = this.hasChapter(child);
-            if (chapter) {
-                majorTopics[series].chapters.push(chapter);
-            }
-        }
-    }
-    return JSON.stringify(majorTopics);
+    const chapterName = el.innerText.split(chapterNumber)[1].trim();
+    const chapterURL = el.querySelector('a').href;
+    return [chapterNumber, chapterName, chapterURL];
 }
 
 const browser = await puppeteer.launch();
@@ -134,11 +95,11 @@ const page = await browser.newPage();
 await page.goto(BASE_URL);
 
 const chapterList = await page.$$('td ul > *');
-
-chapterList.forEach(async (list) => {
-    if (await listHasTopics(list)) {
-        console.log('apparently this works still');
+for (const chapter of chapterList) {
+    const chapterArray = chapter.evaluate(getChapter);
+    if(chapterArray) {
+        console.log(chapterArray);
     }
-});
+}
 
 browser.close();
