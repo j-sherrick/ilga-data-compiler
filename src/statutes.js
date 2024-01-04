@@ -2,6 +2,7 @@ import puppeteer, { Page } from 'puppeteer';
 
 
 const BASE_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs.asp';
+
 const MAJOR_TOPIC_NAMES = [
     'GOVERNMENT',
     'EDUCATION',
@@ -13,6 +14,7 @@ const MAJOR_TOPIC_NAMES = [
     'RIGHTS AND REMEDIES',
     'BUSINESS AND EMPLOYMENT'
 ];
+
 const MAJOR_TOPIC_NUMBERS = [
     '00',
     '100',
@@ -24,6 +26,7 @@ const MAJOR_TOPIC_NUMBERS = [
     '700',
     '800'
 ];
+
 const SERIES = 0;
 const NUMBER = 0;
 const NAME = 1;
@@ -125,3 +128,17 @@ function getChaptersFromList(list) {
     }
     return JSON.stringify(majorTopics);
 }
+
+const browser = await puppeteer.launch();
+const page = await browser.newPage();
+await page.goto(BASE_URL);
+
+const chapterList = await page.$$('td ul > *');
+
+chapterList.forEach(async (list) => {
+    if (await listHasTopics(list)) {
+        console.log('apparently this works still');
+    }
+});
+
+browser.close();
