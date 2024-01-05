@@ -1,9 +1,9 @@
-import puppeteer, { Page } from 'puppeteer';
+import puppeteer, { ElementHandle, Page } from 'puppeteer';
 
 
 const BASE_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs.asp';
 
-const MAJOR_TOPIC_NAMES = [
+const TOPICS = [
     'GOVERNMENT',
     'EDUCATION',
     'REGULATION',
@@ -15,7 +15,7 @@ const MAJOR_TOPIC_NAMES = [
     'BUSINESS AND EMPLOYMENT'
 ];
 
-const MAJOR_TOPIC_NUMBERS = [
+const SERIES_NUMBERS = [
     '00',
     '100',
     '200',
@@ -27,79 +27,45 @@ const MAJOR_TOPIC_NUMBERS = [
     '800'
 ];
 
-const SERIES = 0;
-const NUMBER = 0;
-const NAME = 1;
-const URL = 2;
-
-/**
-* @param { Element } el child element of the <ul> of chapters located at BASE_URL
-* 
-* @returns { Boolean } true if the element contains any of the major topics, false otherwise
-*/
-function hasTopic(el) {
-    for (const topic in ILGADataExtractor.MAJOR_TOPIC_NAMES) {
-        if (el.innerText.includes(topic)) {
-            return true; 
-        }
-    }
-    return false;
-}
-/**
- * 
- * @param { Element } el child element of the <ul> of chapters located at BASE_URL
- *  
- * @returns { Array } with the format [ '00', 'GOVERNMENT' ] 
- */
-function getTopic(el) {
-    for (let i = 0; i < ILGADataExtractor.MAJOR_TOPIC_NAMES.length; i++) {
-        if (el.innerText.includes(ILGADataExtractor.MAJOR_TOPIC_NAMES[i])) {
-            return [ILGADataExtractor.MAJOR_TOPIC_NUMBERS[i], ILGADataExtractor.MAJOR_TOPIC_NAMES[i]];
-        }
-    }
-    return null;
-}
-/**
- * @param { Element } el child of the <ul> of chapters located at BASE_URL
- * 
- * @returns { Boolean } true if the word 'CHAPTER' is in the innerText of `el`, false otherwise
-*/
-function hasChapter(el) {
-    return el.innerText.includes('CHAPTER');
-}
-/**
- * 
- * @param { Element } el child of the <ul> of chapters located at BASE_URL
- * 
- * @returns { Array } with the format:
- * 
- *             [
- *                '105',
- *                'SCHOOLS',
- *                'https://www.ilga.gov/legislation/ilcs/ilcs2.asp?ChapterID=17'
- *              ] 
- */
-function getChapter(el) {
-    const chapterNumberRegEx = /d{1,3}/; // we should be safe assuming any sequence of 1-3 digits is a chapter number
-    const chapterNumber = el.innerText.match(chapterNumberRegEx)[0];
-    if (!chapterNumber) {
-        return null;
-    }
-    const chapterName = el.innerText.split(chapterNumber)[1].trim();
-    const chapterURL = el.querySelector('a').href;
-    return [chapterNumber, chapterName, chapterURL];
-}
-
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
 await page.goto(BASE_URL);
 
-const chapterList = await page.$$('td ul > *');
-for (const chapter of chapterList) {
-    const chapterArray = chapter.evaluate(getChapter);
-    if(chapterArray) {
-        console.log(chapterArray);
+const chapterList = await page.$$eval('td ul > *', list => {
+    let chapters = {};
+    let series = '';
+    for (const el of list) {
+        const line = el.innerText;
+        if (!line) continue;
+
+        let number = '';
+        let name = '';
+        let url = '';
+        if (line.includes('CHAPTER')) {
+            // regex pattern to match any string of up to 3 digits
+            number = line.match(/\d{1,3}/)[0];
+            name = line.split(number)[1].trim();
+            url = el.querySelector('a').href;
+        }
+        else {
+            // check if el is a div without using querySelector
+            if (el.tagName === 'DIV' && el.className === 'black10bold') {
+                for ( let i = 0; i < TOPICS.length; i++) {
+                    if (line.includes(TOPICS[i])) {
+                        chapters[SERIES_NUMBERS[i]] = {
+                            name: TOPICS[i],
+                            chapters: {}
+                        };
+                    }
+                }
+            }
+
+        }
     }
-}
+},
+TOPICS,
+SERIES_NUMBERS);
+
+console.log(chapterList);
 
 browser.close();
