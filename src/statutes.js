@@ -32,34 +32,51 @@ const page = await browser.newPage();
 await page.goto(BASE_URL);
 
 export const ILCSChapterIndex = {
-    chapters: page.$eval('td ul', (uList, SERIES_NAMES, SERIES_NUMBERS) => {
+    rawString: await page.$eval('td ul', (uList, SERIES_NAMES, SERIES_NUMBERS) => {
         
+        let seriesNumber = '';
         let index = {};
-        let series = '';
-        let chapter = '';
-        for( const item of ul) {
-            if (item.innerText.includes('CHAPTER')) {
-                const digitRegEx = /\d{1,3}/;
-                const series = line.innerText.match(digitRegEx);
-                if (series) {
-                    const name = line.innerText.split(series)[1].trim();
-                    index[series] = {
-                        name,
-                    }
-                }
-            }
-            else {
-                for (const name in SERIES_NAMES)
-                    if (item.innerText.includes(name)) {
+        let chapter = {};
+        let temp= '';
 
-                    }
-                
-            }
+        for (const item in uList) {
+            temp += uList[item].innerText;
+            // if (uList[item].innerText.includes('CHAPTER')) {
+            //     const temp = uList[item];
+            //     const digitRegEx = /\d{1,3}/;
+            //     const chapterNumber = temp.innerText.match(digitRegEx);
+            //     if (chapterNumber) {
+            //         index[seriesNumber] = {
+            //             [chapters[chapterNumber]]: {
+            //                 title: temp.innerText.split(chapterNumber)[1].trim(),
+            //                 url: temp.querySelector('a').url,
+            //             }
+            //         }
+            //     }
+            // }
+            // else {
+            //     for (let i = 0; i < SERIES_NAMES.length; i++)
+            //         if (uList[item].innerText.includes(SERIES_NAMES[i])) {
+            //             seriesNumber = SERIES_NUMBERS[i];
+            //             index[seriesNumber] = {
+            //                 topic: SERIES_NAMES[i],
+            //                 chapters: {},
+            //             }
+            //         }
+            // }
+            return temp;
         }
-    })
+        return JSON.stringify(index);
+    }, SERIES_NAMES, SERIES_NUMBERS)
 }
 
-// const quickTest = await page.$eval('td ul', el => el.innerText );
+const ilcs = await ILCSChapterIndex;
+if(ilcs.rawString) {
+    console.log(ilcs.rawString);
+}
+
+browser.close();
+
 
 // console.log(quickTest);
 
