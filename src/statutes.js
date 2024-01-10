@@ -31,49 +31,34 @@ const browser = await puppeteer.launch();
 const page = await browser.newPage();
 await page.goto(BASE_URL);
 
-export const ILCSChapterIndex = {
-    rawString: await page.$eval('td ul', (uList, SERIES_NAMES, SERIES_NUMBERS) => {
-        
-        let seriesNumber = '';
-        let index = {};
-        let chapter = {};
-        let temp= '';
+export const ILCSChapterIndex = await page.$$eval('td ul > *', (uList, SERIES_NAMES, SERIES_NUMBERS) => {
 
-        for (const item in uList) {
-            temp += uList[item].innerText;
-            // if (uList[item].innerText.includes('CHAPTER')) {
-            //     const temp = uList[item];
-            //     const digitRegEx = /\d{1,3}/;
-            //     const chapterNumber = temp.innerText.match(digitRegEx);
-            //     if (chapterNumber) {
-            //         index[seriesNumber] = {
-            //             [chapters[chapterNumber]]: {
-            //                 title: temp.innerText.split(chapterNumber)[1].trim(),
-            //                 url: temp.querySelector('a').url,
-            //             }
-            //         }
-            //     }
-            // }
-            // else {
-            //     for (let i = 0; i < SERIES_NAMES.length; i++)
-            //         if (uList[item].innerText.includes(SERIES_NAMES[i])) {
-            //             seriesNumber = SERIES_NUMBERS[i];
-            //             index[seriesNumber] = {
-            //                 topic: SERIES_NAMES[i],
-            //                 chapters: {},
-            //             }
-            //         }
-            // }
-            return temp;
+    // it proves to be exceptionally difficult to return complex objects from eval()
+    // maybe we should create some temp variables to aid in constructing one big ass string ourselves
+    let returnString  = '';
+
+    const regex = /\d{1,3}/;
+    let chapterNumber = '';
+    let chapterTopic = '';
+    let seriesTopic = '';
+    let url = '';
+ 
+    for(item of uList) {
+        if (item.innerText.includes('CHAPTER')) {
+            chapterNumber = item.innerText.match(regex);
+            if (chapterNumber) {
+                chapterTopic = item.innerText.split(chapterNumber)[1].trim();
+                url = item.querySelector('a').href;
+                returnString += chapterNumber + ' ' + chapterTopic + '\n';
+                returnString += 'href: ' + url + '\n';
+            }
         }
-        return JSON.stringify(index);
-    }, SERIES_NAMES, SERIES_NUMBERS)
-}
+    }
 
-const ilcs = await ILCSChapterIndex;
-if(ilcs.rawString) {
-    console.log(ilcs.rawString);
-}
+    return returnString;
+}, SERIES_NAMES, SERIES_NUMBERS);
+        
+console.log(ILCSChapterIndex);
 
 browser.close();
 
