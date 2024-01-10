@@ -53,6 +53,13 @@ export const ILCSChapterIndex = await page.$$eval('td ul > *', (uList, SERIES_NA
                 returnString += 'href: ' + url + '\n';
             }
         }
+        else if (item.innerText) {
+            for (let i = 0; i < SERIES_NAMES.length; i++) {
+                if (item.innerText.includes(SERIES_NAMES[i])) {
+                    returnString += SERIES_NUMBERS[i] + ' ' + SERIES_NAMES[i] + '\n';
+                }
+            }
+        }
     }
 
     return returnString;
