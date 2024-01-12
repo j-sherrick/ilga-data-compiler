@@ -29,44 +29,63 @@ const SERIES_NUMBERS = [
 
 const browser = await puppeteer.launch();
 const basePage = await browser.newPage();
-await basePage.goto(BASE_URL);
+// await basePage.goto(BASE_URL);
 
-export const ILCSIndex = await basePage.$$eval('td ul > *', (listChildren, SERIES_NAMES, SERIES_NUMBERS) => {
+// export const ILCSIndex = await basePage.$$eval('td ul > *', (listChildren, SERIES_NAMES, SERIES_NUMBERS) => {
 
-    let returnString  = '';
+//     let chapterIndexString  = '';
 
-    const regex = /\d{1,3}/;
-    let chapterNumber = '';
-    let chapterTopic = '';
-    let url = '';
+//     const regex = /\d{1,3}/;
+//     let chapterNumber = '';
+//     let chapterTopic = '';
+//     let url = '';
  
-    for(let child of listChildren) {
-        if (child.innerText.includes('CHAPTER')) {
-            chapterNumber = child.innerText.match(regex);
-            url = child.querySelector('a').href;
-            if (chapterNumber && url) {
-                chapterTopic = child.innerText.split(chapterNumber)[1].trim();
-                returnString += chapterNumber + ' ' + chapterTopic + '\n';
-                returnString += 'href: ' + url + '\n';
-            }
-        }
-        else if (child.innerText) {
-            for (let i = 0; i < SERIES_NAMES.length; i++) {
-                if (child.innerText.includes(SERIES_NAMES[i])) {
-                    returnString += SERIES_NUMBERS[i] + ' ' + SERIES_NAMES[i] + '\n';
-                }
-            }
-        }
-    }
+//     for(const listChild of listChildren) {
+//         if (listChild.innerText.includes('CHAPTER')) {
+//             chapterNumber = listChild.innerText.match(regex);
+//             url = listChild.querySelector('a').href;
+//             if (chapterNumber && url) {
+//                 chapterTopic = listChild.innerText.split(chapterNumber)[1].trim();
+//                 chapterIndexString += chapterNumber + ' ' + chapterTopic + '\n';
+//                 chapterIndexString += url + '\n';
+//             }
+//         }
+//         else if (listChild.innerText) {
+//             for (let i = 0; i < SERIES_NAMES.length; i++) {
+//                 if (listChild.innerText.includes(SERIES_NAMES[i])) {
+//                     chapterIndexString += SERIES_NUMBERS[i] + ' ' + SERIES_NAMES[i] + '\n';
+//                 }
+//             }
+//         }
+//     }
 
-    return returnString;
-}, SERIES_NAMES, SERIES_NUMBERS);
+//     return chapterIndexString;
+// }, SERIES_NAMES, SERIES_NUMBERS);
 
 const ACT_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs2.asp?ChapterID=5';
 const actPage = await browser.newPage();
 await actPage.goto(ACT_URL);
 
-export const ILCSActIndex =
-console.log(ILCSIndex);
+export const ILCSActIndex = await actPage.$$eval('td ul > *', (listChildren) => {
+    let prefix = '', title = '', url = '', category = '';
+    let actIndexString = '';
+    for (const listChild of listChildren) {
+        if (listChild.tagName === 'P') {
+            category = listChild.innerText;
+            actIndexString += '\n' + category + '\n';
+        }
+        else if (listChild.tagName === 'LI' && listChild.innerText.includes('ILCS')) {
+            let temp = listChild.innerText.split('/');
+            title = temp[1].trim();
+            prefix = temp[0].split(' ')[2];
+            url = listChild.querySelector('a').href;
+            actIndexString += prefix + ' ' + title + '\n';
+            actIndexString += url + '\n';
+        }
+    }
+    return actIndexString;
+});
+
+console.log(ILCSActIndex);
 
 browser.close();
