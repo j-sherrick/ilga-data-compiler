@@ -16,11 +16,6 @@ export function getILCSChapters(ulChildren) {
 export function getILCSActs(ulChildren) {
     let actIndexString = '';
 
-    for (let i = 0; i < ulChildren.length; i++) {
-        if (ulChildren[i].tagName === 'P') {}
-        else if (ulChildren[i].tagName === 'LI') {}
-    }
-
     for (const ulChild of ulChildren) {
         if (ulChild.tagName === 'P') {
             actIndexString +=  '\n' + ulChild.innerText;

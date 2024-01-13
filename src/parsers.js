@@ -47,7 +47,7 @@ function parseSectionTitle(section, sectionNumber) {
     if (!section.includes(sectionNumber)) return '';
 
     let title = section.split(sectionNumber + '.')[1].trim();
-    return title.split('\n')[0];
+    return normalizeNbps(title.split('\n')[0]);
 }
 
 function parseSectionText(section) {
@@ -65,30 +65,25 @@ function parseSectionSource(section) {
 
 export function parseActText(actString) {
     const actSections = actString.split('\n\n').map(normalizeNewlines);
-    let act = {};
-    let sectionNumber = '', sectionText = '', sectionSource = '', sectionTitle = '';
+    let number = '', text = '', source = '', title = '';
     for (const section of actSections) {
-        sectionNumber = parseSectionNumber(section);
-        sectionTitle = parseSectionTitle(section, sectionNumber);
-        sectionSource = parseSectionSource(section);
-        sectionText = parseSectionText(section);
-        act[sectionNumber] = {
-            title: sectionTitle,
-            text: sectionText,
-            source: sectionSource
-        };
+        number = parseSectionNumber(section);
+        title = parseSectionTitle(section, number);
+        source = parseSectionSource(section);
+        text = parseSectionText(section);
     }
-    return act;
+    return { number, title, text, source };
 }
 
 function parseActFromLine (line) {
    let { prefix, title } = line.split('/');
    prefix = prefix.split(' ')[2];
    title = title.trim();
+   return { prefix, title };
 }
 
 export function parseActIndex(actIndexString) {
-    const actIndex = actIndexString.split('\n\n');
+    const actIndex = actIndexString.split('\n\n').filter(line => line !== '');
     let title = '', prefix = '';
     if (actIndex.length === 1) {
         actIndex = actIndex[0].split('\n');
