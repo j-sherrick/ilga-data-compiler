@@ -63,7 +63,7 @@ function parseSectionSource(section) {
     return normalizeNbsp(section);
 }
 
-export function parseAct(actString) {
+export function parseActText(actString) {
     const actSections = actString.split('\n\n').map(normalizeNewlines);
     let act = {};
     let sectionNumber = '', sectionText = '', sectionSource = '', sectionTitle = '';
@@ -81,14 +81,27 @@ export function parseAct(actString) {
     return act;
 }
 
-export function parseActIndex(actIndexString) {
-    let acts = actIndexString.split('\n\n');
-    acts[0] = acts[0].slice(1);
-    let prefix = '', title = '', url = '';
-    let category = '';
+function parseActFromLine (line) {
+   let { prefix, title } = line.split('/');
+   prefix = prefix.split(' ')[2];
+   title = title.trim();
 }
 
-export function parseChapterIndexd(chapterIndexString) {
+export function parseActIndex(actIndexString) {
+    const actIndex = actIndexString.split('\n\n');
+    let title = '', prefix = '';
+    if (actIndex.length === 1) {
+        actIndex = actIndex[0].split('\n');
+    }
+    else if (actIndex.length > 1) {
+        for (const category in actIndex) {
+            category = category.split('\n');
+            title = category[0];
+        }
+    }
+}
+
+export function parseChapterIndex(chapterIndexString) {
     return '';
 }
 browser.close();
