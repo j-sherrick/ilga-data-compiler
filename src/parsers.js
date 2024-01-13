@@ -22,10 +22,12 @@ const SERIES_NUMBERS = [
     '800'
 ];
 const NBSP_REGEX = /&nbsp;+/g;
+const SP = ' ';
 const NL_REGEX = /\n+/g;
+const NL = '\n';
+
 const ILCS = 'ILCS';
 const SOURCE = 'Source:';
-const SP = ' ';
 
 function normalizeNbsp(section) {
     return section.replace(NBSP_REGEX, SP);
@@ -42,13 +44,15 @@ function parseSectionNumber(section) {
 }
 
 function parseSectionSource(section) {
-    if (!section.includes(SOURCE)) return '';
-    return section.split(SOURCE)[1].trim().slice(0, -1); 
+    if (!section.includes(SOURCE)) return section;
+    section = section.split(SOURCE)[1].trim().slice(0, -1); 
+    return normalizeNbsp(section);
 }
 
 function parseSectionText(section) {
-    if (!section.includes(SOURCE)) return section;
-    return section.split(SOURCE)[0].trim();
+    if (!section.includes(ILCS)) return section;
+    section = section.split(NL).filter(line => !line.includes(ILCS) && !line.includes(SOURCE));
+    return
 }
 
 function parseSectionTitle(section, sectionNumber) {
@@ -58,7 +62,7 @@ function parseSectionTitle(section, sectionNumber) {
     return title.slice(0, title.indexOf('.'));
 }
 
-export function parseActText(actString) {
+export function parseAct(actString) {
     const actSections = actString.split('\n\n').map(normalizeNewlines);
     let act = {};
     let sectionNumber = '', sectionText = '', sectionSource = '', sectionTitle = '';
@@ -77,7 +81,7 @@ export function parseActText(actString) {
 }
 
 export function parseActIndex(actIndexString) {
-    return ''; 
+    let topics = actIndexString.split('\n\n')[0].trim();
 }
 
 export function parseChapterIndexd(chapterIndexString) {

@@ -5,7 +5,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "test": "node src/parsers.js"
+    "test": "node src/crawlers.js"
   },
   "repository": {
     "type": "git",
