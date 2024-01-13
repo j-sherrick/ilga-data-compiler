@@ -34,7 +34,7 @@ function normalizeNbsp(section) {
 }
 
 function normalizeNewlines(section) {
-    return section.replace(NL_REGEX, '\n');
+    return section.replace(NL_REGEX, NL);
 }
 
 function parseSectionNumber(section) {
@@ -43,23 +43,24 @@ function parseSectionNumber(section) {
     return sectionNumber.split('/')[1].slice(0, -1);
 }
 
-function parseSectionSource(section) {
-    if (!section.includes(SOURCE)) return section;
-    section = section.split(SOURCE)[1].trim().slice(0, -1); 
-    return normalizeNbsp(section);
+function parseSectionTitle(section, sectionNumber) {
+    if (!section.includes(sectionNumber)) return '';
+
+    let title = section.split(sectionNumber + '.')[1].trim();
+    return title.split('\n')[0];
 }
 
 function parseSectionText(section) {
     if (!section.includes(ILCS)) return section;
     section = section.split(NL).filter(line => !line.includes(ILCS) && !line.includes(SOURCE));
-    return
+    section = section.filter(line => line !== '' || !line.includes('Sec.'));
+    return section.join('\n').trim();
 }
 
-function parseSectionTitle(section, sectionNumber) {
-    if (!section.includes(sectionNumber)) return '';
-
-    let title = section.split(sectionNumber + '.')[1].trim();
-    return title.slice(0, title.indexOf('.'));
+function parseSectionSource(section) {
+    if (!section.includes(SOURCE)) return section;
+    section = section.split(SOURCE)[1].trim().slice(0, -1); 
+    return normalizeNbsp(section);
 }
 
 export function parseAct(actString) {
@@ -81,7 +82,10 @@ export function parseAct(actString) {
 }
 
 export function parseActIndex(actIndexString) {
-    let topics = actIndexString.split('\n\n')[0].trim();
+    let acts = actIndexString.split('\n\n');
+    acts[0] = acts[0].slice(1);
+    let prefix = '', title = '', url = '';
+    let category = '';
 }
 
 export function parseChapterIndexd(chapterIndexString) {
