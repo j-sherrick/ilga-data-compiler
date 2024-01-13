@@ -27,12 +27,12 @@ const ILCS = 'ILCS';
 const SOURCE = 'Source:';
 const SP = ' ';
 
-function normalizeNbsp(string) {
-    return string.replace(NBSP_REGEX, SP);
+function normalizeNbsp(section) {
+    return section.replace(NBSP_REGEX, SP);
 }
 
 function normalizeNewlines(section) {
-    return string.replace(NL_REGEX, '\n');
+    return section.replace(NL_REGEX, '\n');
 }
 
 function parseSectionNumber(section) {
@@ -51,14 +51,36 @@ function parseSectionText(section) {
     return section.split(SOURCE)[0].trim();
 }
 
+function parseSectionTitle(section, sectionNumber) {
+    if (!section.includes(sectionNumber)) return '';
+
+    let title = section.split(sectionNumber + '.')[1].trim();
+    return title.slice(0, title.indexOf('.'));
+}
+
 export function parseActText(actString) {
     const actSections = actString.split('\n\n').map(normalizeNewlines);
     let act = {};
-    let number = '', text = '', source = '';
-    for (let section of actSections) {
-        section = section.split("\n");
-        number = getSectionNumberFromLine(section[0]);
-        source = section[-1].split('Source:')[1].trim();
+    let sectionNumber = '', sectionText = '', sectionSource = '', sectionTitle = '';
+    for (const section of actSections) {
+        sectionNumber = parseSectionNumber(section);
+        sectionTitle = parseSectionTitle(section, sectionNumber);
+        sectionSource = parseSectionSource(section);
+        sectionText = parseSectionText(section);
+        act[sectionNumber] = {
+            title: sectionTitle,
+            text: sectionText,
+            source: sectionSource
+        };
     }
+    return act;
+}
+
+export function parseActIndex(actIndexString) {
+    return ''; 
+}
+
+export function parseChapterIndexd(chapterIndexString) {
+    return '';
 }
 browser.close();
