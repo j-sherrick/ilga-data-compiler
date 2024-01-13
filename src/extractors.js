@@ -1,11 +1,11 @@
-export function getILCSChapters(listChildren) {
+export function getILCSChapters(ulChildren) {
     let chapterIndexString  = '';
-    for(const listChild of listChildren) {
-        if (listChild.tagName === 'DIV')
-            chapterIndexString += '\n' + listChild.innerText + '\n';
-        else if (listChild.tagName === 'LI') {
-            chapterIndexString += listChild.innerText + '\n';
-            chapterIndexString += listChild.querySelector('a').href + '\n';
+    for(const uChild of ulChildren) {
+        if (uChild.tagName === 'DIV')
+            chapterIndexString += '\n' + uChild.innerText + '\n';
+        else if (uChild.tagName === 'LI') {
+            chapterIndexString += uChild.innerText + '\n';
+            chapterIndexString += uChild.querySelector('a').href + '\n';
         }
     }
     return chapterIndexString;
