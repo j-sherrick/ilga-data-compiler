@@ -1,33 +1,45 @@
-const SERIES_NAMES = [
-    'GOVERNMENT',
-    'EDUCATION',
-    'REGULATION',
-    'HUMAN NEEDS',
-    'HEALTH AND SAFETY',
-    'AGRICULTURE AND CONSERVATION',
-    'TRANSPORTATION',
-    'RIGHTS AND REMEDIES',
-    'BUSINESS AND EMPLOYMENT'
-];
+const
+    TITLE = 'title',
 
-const SERIES_NUMBERS = [
-    '00',
-    '100',
-    '200',
-    '300',
-    '400',
-    '500',
-    '600',
-    '700',
-    '800'
-];
-const NBSP_REGEX = /&nbsp;+/g;
-const SP = ' ';
-const NL_REGEX = /\n+/g;
-const NL = '\n';
+    URL = 'url',
 
-const ILCS = 'ILCS';
-const SOURCE = 'Source:';
+    CATEGORY = 'category',
+
+    SOURCE = 'Source:',
+
+    ILCS = 'ILCS',
+
+    SP = ' ',
+
+    NL = '\n',
+    NBSP_REGEX = /&nbsp;+/g,
+
+    NL_REGEX = /\n+/g,
+
+    SERIES_NUMBERS = [
+        '00',
+        '100',
+        '200',
+        '300',
+        '400',
+        '500',
+        '600',
+        '700',
+        '800'
+    ],
+
+    SERIES_NAMES = [
+        'GOVERNMENT',
+        'EDUCATION',
+        'REGULATION',
+        'HUMAN NEEDS',
+        'HEALTH AND SAFETY',
+        'AGRICULTURE AND CONSERVATION',
+        'TRANSPORTATION',
+        'RIGHTS AND REMEDIES',
+        'BUSINESS AND EMPLOYMENT'
+    ]
+;
 
 function normalizeNbsp(section) {
     return section.replace(NBSP_REGEX, SP);
@@ -75,25 +87,59 @@ export function parseActText(actString) {
     return { number, title, text, source };
 }
 
-function parseActFromLine (line) {
+function parseActTitle (line) {
    let { prefix, title } = line.split('/');
    prefix = prefix.split(' ')[2];
    title = title.trim();
    return { prefix, title };
 }
 
+function parseActCategory (line) {
+    return normalizeNbsp(line.split(':')[1].trim());
+}
+
+
 export function parseActIndex(actIndexString) {
-    const actIndex = actIndexString.split('\n\n').filter(line => line !== '');
-    let title = '', prefix = '';
-    if (actIndex.length === 1) {
-        actIndex = actIndex[0].split('\n');
-    }
-    else if (actIndex.length > 1) {
-        for (const category in actIndex) {
-            category = category.split('\n');
-            title = category[0];
+    let actIndex = {};
+    let hasSubCategories = false;
+    let subcategories = [];
+    let subcategory = '', series = '', title = '', prefix, url = '';
+
+    let actIndexArray = actIndexString.split('\n');
+    for (const indexElement in actIndexArray) {
+        if(hasSubCategories) {
+            if (indexElement.includes('category')) {
+                subcategory = parseActCategory(indexElement);
+                subcategories.push(subcategory);
+                series = SERIES_NUMBERS[categories.length];
+                actIndex[series] = {  };
+            }
+            else if (indexElement.includes('title')) {
+                ({ prefix, title } = parseActTitle(indexElement));
+                actIndex[series][prefix] = { title, url: '' };
+            }
+            else if (indexElement.includes('url')) {
+                url = indexElement.split(':')[1].trim();
+                actIndex[series][prefix].url = url;
+            }
+        }
+        else {
+            if (indexElement.includes('category')) {
+                series = SERIES_NUMBERS[subcategories.length];
+                subcategory = parseActCategory(indexElement);
+                subcategories.push(subcategory);
+            }
+            else if (indexElement.includes('title')) {
+                ({ prefix, title } = parseActTitle(indexElement));
+                actIndex[prefix] = { title, url: '' };
+            }
+            else if (indexElement.includes('url')) {
+                url = indexElement.split(':')[1].trim();
+                actIndex[prefix].url = url;
+            }
         }
     }
+    return actIndex;
 }
 
 export function parseChapterIndex(chapterIndexString) {

@@ -1,5 +1,5 @@
 import puppeteer, { ElementHandle, Page } from 'puppeteer';
-import { getILCSActs } from './extractors.js';
+import { getILCSIndexString } from './extractors.js';
 
 const CHAPTER_INDEX_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs.asp';
 
@@ -9,9 +9,9 @@ const ACT_TEXT_TEST_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID
 
 const browser = await puppeteer.launch();
 const actPage = await browser.newPage();
-await actPage.goto(ACT_INDEX_TEST_URL);
+await actPage.goto(CHAPTER_INDEX_URL);
 
-const actIndexString = await actPage.$$eval('td ul > *', getILCSActs);
+const actIndexString = await actPage.$$eval('td ul > *', getILCSIndexString);
 
 console.log(actIndexString);
 
