@@ -1,3 +1,8 @@
+
+export const ULISTCHILDREN = 'td ul > *';
+export const PCHILDREN = 'td p > *'
+
+
 export function getILCSIndexString(ulChildren) {
     let chapterIndexString  = '';
 
@@ -12,6 +17,18 @@ export function getILCSIndexString(ulChildren) {
     }
 
     return chapterIndexString;
+}
+
+export function getILCSAct(pChildren) {
+    let actText = '';
+
+    for (const pChild of pChildren) {
+        if (pChild.tagName === 'TABLE') {
+            actText += pChild.innerText + '\n\n';
+        }
+    }
+
+    return actText;
 }
 
 // export function getILCSActs(ulChildren) {
@@ -29,15 +46,3 @@ export function getILCSIndexString(ulChildren) {
 
 //     return actIndexString;
 // }
-
-export function getILCSAct(pChildren) {
-    let actText = '';
-
-    for (const pChild of pChildren) {
-        if (pChild.tagName === 'TABLE') {
-            actText += pChild.innerText + '\n\n';
-        }
-    }
-
-    return actText;
-}

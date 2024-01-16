@@ -41,11 +41,11 @@ const
     ]
 ;
 
-function normalizeNbsp(section) {
+export function normalizeNbsp(section) {
     return section.replace(NBSP_REGEX, SP);
 }
 
-function normalizeNewlines(section) {
+export function normalizeNewlines(section) {
     return section.replace(NL_REGEX, NL);
 }
 
@@ -63,14 +63,14 @@ function parseSectionTitle(section, sectionNumber) {
 }
 
 function parseSectionText(section) {
-    if (!section.includes(ILCS)) return section;
+    if (!section.includes(ILCS)) return '';
     section = section.split(NL).filter(line => !line.includes(ILCS) && !line.includes(SOURCE));
     section = section.filter(line => line !== '' || !line.includes('Sec.'));
     return section.join('\n').trim();
 }
 
 function parseSectionSource(section) {
-    if (!section.includes(SOURCE)) return section;
+    if (!section.includes(SOURCE)) return '';
     section = section.split(SOURCE)[1].trim().slice(0, -1); 
     return normalizeNbsp(section);
 }
@@ -145,4 +145,3 @@ export function parseActIndex(actIndexString) {
 export function parseChapterIndex(chapterIndexString) {
     return '';
 }
-browser.close();
