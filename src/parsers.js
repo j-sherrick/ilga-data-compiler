@@ -1,6 +1,7 @@
 const TITLE = 'title';
 const HREF = 'url';
 const TOPIC = 'topic';
+const ILCS = 'ILCS';
 
 const SP = ' ';
 const NL = '\n';
@@ -72,7 +73,7 @@ function parseChapter(chptString) {
             chapter.topic = parseChapterTopic(line);
         }
         else if (line.includes(HREF)) {
-            chapter.url = line.split('url:')[1].trim();
+            chapter.url = line.split('url:')[1];
         }
     }
     return chapter;
@@ -85,4 +86,59 @@ export function parseChapterIndex(chapterIndexString) {
         chapters.push(parseChapter(chapter));
     }
     return chapters;
+}
+
+function parseActPrefix(act) {
+    let prefix = normalizeNbsp(act.split('/')[0]);
+    return prefix.split(' ')[2];
+}
+
+function parseActTitle(act) {
+    return normalizeNbsp(act.split('/')[1].trim());
+}
+
+function parseActSubtopic(subtopic) {
+    return subtopic.split(':')[1];
+}
+
+function parseSubtopicSeries(subtopic) {
+    let series = subtopic.charAt(0);
+    if (series === '0') return '00';
+    return series + '00';
+}
+
+function parseAct(act) {
+    act = normalizeNewlines(act);
+    const actArray = act.split(NL);
+    let parsedAct = {};
+    let currentSubtopic = '';
+    for (const line of actArray) {
+        if (line.includes(TITLE)) {
+            parsedAct.prefix = parseActPrefix(line);
+            parsedAct.title = parseActTitle(line);
+            if(currentSubtopic) {
+                let series = parseSubtopicSeries(parsedAct.prefix);
+                parsedAct.subtopic = {
+                    series: series,
+                    name: currentSubtopic
+                };
+            }
+        }
+        else if (line.includes(HREF)) {
+            parsedAct.url = line.split('url:')[1];
+        }
+        else if (line.includes(TOPIC)) {
+            currentSubtopic = parseActSubtopic(line);
+        }
+    }
+    return parsedAct;
+}
+
+export function parseActIndex(actIndexString) {
+    const actIndexArray = actIndexString.split(NL + NL);
+    let acts = [];
+    for (const act of actIndexArray) {
+        console.log('\n' + act);
+    }
+    return acts;
 }
