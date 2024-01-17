@@ -6,13 +6,14 @@ export const PCHILDREN = 'td p > *'
 export function getILCSIndexString(ulChildren) {
     let chapterIndexString  = '';
 
-    for(const uChild of ulChildren) {
-        if (
-            (uChild.tagName === 'DIV' || uChild.tagName === 'P') && uChild.innerText !== '')
-            chapterIndexString += 'category:' + uChild.innerText + '\n';
-        else if (uChild.tagName === 'LI' && uChild.innerText !== '') {
-            chapterIndexString += 'title: ' + uChild.innerText + '\n';
-            chapterIndexString += 'url: ' + uChild.querySelector('a').href + '\n';
+    for(const ulChild of ulChildren) {
+        if ((ulChild.tagName === 'DIV' || ulChild.tagName === 'P') && ulChild.innerText !== '') {
+            chapterIndexString += (ulChild.tagName === 'DIV') ? 'topic:' : 'subtopic:';
+            chapterIndexString += ulChild.innerText + '\n';
+        }
+        else if (ulChild.tagName === 'LI' && ulChild.innerText !== '') {
+            chapterIndexString += 'title:' + ulChild.innerText + '\n';
+            chapterIndexString += 'url:' + ulChild.querySelector('a').href + '\n';
         }
     }
 

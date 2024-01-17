@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/j-sherrick/ilga-statute-compiler#readme",
   "dependencies": {
+    "mongoose": "^8.1.0",
     "puppeteer": "^21.6.1"
   },
   "devDependencies": {
