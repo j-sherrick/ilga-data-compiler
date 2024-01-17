@@ -5,15 +5,15 @@ export const PCHILDREN = 'td p > *'
 
 export function getILCSIndexString(ulChildren) {
     let chapterIndexString  = '';
-
+    let currentTopic = '';
     for(const ulChild of ulChildren) {
         if ((ulChild.tagName === 'DIV' || ulChild.tagName === 'P') && ulChild.innerText !== '') {
-            chapterIndexString += (ulChild.tagName === 'DIV') ? 'topic:' : 'subtopic:';
-            chapterIndexString += ulChild.innerText + '\n';
+            currentTopic = ulChild.innerText;
         }
         else if (ulChild.tagName === 'LI' && ulChild.innerText !== '') {
             chapterIndexString += 'title:' + ulChild.innerText + '\n';
-            chapterIndexString += 'url:' + ulChild.querySelector('a').href + '\n';
+            chapterIndexString += 'topic:' + currentTopic + '\n';
+            chapterIndexString += 'url:' + ulChild.querySelector('a').href + '\n\n';
         }
     }
 
