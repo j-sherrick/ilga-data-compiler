@@ -1,5 +1,5 @@
 import puppeteer, { ElementHandle, Page } from 'puppeteer';
-import { getILCSIndexString, ULISTCHILDREN, PCHILDREN } from './extractors.js';
+import { getILCSIndexString, UL_CHILDREN, P_CHILDREN } from './extractors.js';
 import { parseChapterIndex, parseActIndex } from './parsers.js';
 
 const CHAPTER_INDEX_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs.asp';
@@ -19,8 +19,9 @@ const browser = await puppeteer.launch();
 const actIndexPage = await browser.newPage();
 await actIndexPage.goto(ACT_INDEX_URL);
 
-let actIndex = await actIndexPage.$$eval(ULISTCHILDREN, getILCSIndexString);
+let actIndex = await actIndexPage.$$eval(UL_CHILDREN, getILCSIndexString);
 actIndex = parseActIndex(actIndex);
+// console.log(actIndex);
 // console.log(actIndex);
 
 browser.close();

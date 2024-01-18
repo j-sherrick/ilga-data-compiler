@@ -88,47 +88,42 @@ export function parseChapterIndex(chapterIndexString) {
     return chapters;
 }
 
-function parseActPrefix(act) {
-    let prefix = normalizeNbsp(act.split('/')[0]);
+function parsePrefixFromLine(line) {
+    let prefix = normalizeNbsp(line.split('/')[0]);
     return prefix.split(' ')[2];
 }
 
-function parseActTitle(act) {
+function parseActTitleFromLine(act) {
     return normalizeNbsp(act.split('/')[1].trim());
 }
 
 function parseActSubtopic(subtopic) {
-    return subtopic.split(':')[1];
+    return normalizeNbsp(subtopic.split('topic:')[1].trim());
 }
 
-function parseSubtopicSeries(subtopic) {
-    let series = subtopic.charAt(0);
+function parseSubtopicSeries(prefix) {
+    let series = prefix.charAt(0);
     if (series === '0') return '00';
     return series + '00';
 }
 
 function parseAct(act) {
     act = normalizeNewlines(act);
-    const actArray = act.split(NL);
+    act = act.split(NL);
     let parsedAct = {};
-    let currentSubtopic = '';
-    for (const line of actArray) {
+    for (const line of act) {
         if (line.includes(TITLE)) {
-            parsedAct.prefix = parseActPrefix(line);
-            parsedAct.title = parseActTitle(line);
-            if(currentSubtopic) {
-                let series = parseSubtopicSeries(parsedAct.prefix);
-                parsedAct.subtopic = {
-                    series: series,
-                    name: currentSubtopic
-                };
-            }
+            parsedAct.prefix = parsePrefixFromLine(line);
+            parsedAct.title = parseActTitleFromLine(line);
         }
         else if (line.includes(HREF)) {
             parsedAct.url = line.split('url:')[1];
         }
         else if (line.includes(TOPIC)) {
-            currentSubtopic = parseActSubtopic(line);
+            let subtopic = parseActSubtopic(line);
+            if (subtopic) {
+                parsedAct.subtopic = subtopic;
+            }
         }
     }
     return parsedAct;
@@ -138,7 +133,7 @@ export function parseActIndex(actIndexString) {
     const actIndexArray = actIndexString.split(NL + NL);
     let acts = [];
     for (const act of actIndexArray) {
-        console.log('\n' + act);
+        acts.push(parseAct(act));
     }
     return acts;
 }
