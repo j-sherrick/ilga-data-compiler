@@ -123,7 +123,9 @@ function parseAct(act) {
         else if (line.includes(TOPIC)) {
             let subtopic = parseActSubtopic(line);
             if (subtopic) {
-                parsedAct.subtopic = subtopic;
+                parsedAct.subtopic = {
+                    name: subtopic
+                };
             }
         }
     }
