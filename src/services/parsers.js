@@ -1,14 +1,18 @@
+// Description: This file contains functions for parsing the chapter and act
+
+// keywords returned by the extractors
 const TITLE = 'title';
 const HREF = 'url';
 const TOPIC = 'topic';
-const ILCS = 'ILCS';
 
+// constants used for parsing
 const SP = ' ';
 const NL = '\n';
-const NBSP = '\u00A0';
 const NBSP_REGEX = /\u00A0+/g;
 const NL_REGEX = /\n+/g;
 const CHAPTER_REGEX = /\d{1,3}/;
+
+// static statute data
 const SERIES_NUMBERS = [
         '00',
         '100',
@@ -32,6 +36,7 @@ const SERIES_NAMES = [
         'BUSINESS AND EMPLOYMENT'
     ];
 
+// UTILITIES
 function normalizeNbsp(line) {
     return line.replace(NBSP_REGEX, SP);
 }
@@ -40,6 +45,7 @@ function normalizeNewlines(section) {
     return section.replace(NL_REGEX, NL);
 }
 
+// CHAPTER PARSING
 function parseChapterNumber(chapter) {
     return chapter.match(CHAPTER_REGEX)[0];
 }
@@ -88,23 +94,18 @@ export function parseChapterIndex(chapterIndexString) {
     return chapters;
 }
 
-function parsePrefixFromLine(line) {
+// ACT PARSING
+function parseActPrefix(line) {
     let prefix = normalizeNbsp(line.split('/')[0]);
     return prefix.split(' ')[2];
 }
 
-function parseActTitleFromLine(act) {
+function parseActTitle(act) {
     return normalizeNbsp(act.split('/')[1].trim());
 }
 
 function parseActSubtopic(subtopic) {
     return normalizeNbsp(subtopic.split('topic:')[1].trim());
-}
-
-function parseSubtopicSeries(prefix) {
-    let series = prefix.charAt(0);
-    if (series === '0') return '00';
-    return series + '00';
 }
 
 function parseAct(act) {
@@ -113,8 +114,8 @@ function parseAct(act) {
     let parsedAct = {};
     for (const line of act) {
         if (line.includes(TITLE)) {
-            parsedAct.prefix = parsePrefixFromLine(line);
-            parsedAct.title = parseActTitleFromLine(line);
+            parsedAct.prefix = parseActPrefix(line);
+            parsedAct.title = parseActTitle(line);
         }
         else if (line.includes(HREF)) {
             parsedAct.url = line.split('url:')[1];
@@ -132,7 +133,7 @@ function parseAct(act) {
 export function parseActIndex(actIndexString) {
     const actIndexArray = actIndexString.split(NL + NL);
     let acts = [];
-    for (const act of actIndexArray) {
+    for (let act of actIndexArray) {
         acts.push(parseAct(act));
     }
     return acts;

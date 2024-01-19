@@ -2,13 +2,13 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const SectionSchema = new Schema({
-    number: Number,
+    number: String,
     source: String,
     text: String
 });
 
 const ActSchema = new Schema({
-    prefix: Number,
+    prefix: String,
     title: String,
     citation: String,
     url: String,
@@ -24,7 +24,7 @@ const ActSchema = new Schema({
 });
 
 const ChapterSchema = new Schema({
-    number: Number,
+    number: String,
     url: String,
     title: String,
     topic: {
@@ -38,7 +38,7 @@ const ChapterSchema = new Schema({
 });
 
 const TopicSchema = new Schema({
-    series: Number,
+    series: String,
     name: String,
     chapters: [{
         type: Schema.Types.ObjectId,
@@ -47,7 +47,6 @@ const TopicSchema = new Schema({
 });
 
 const SubtopicSchema = new Schema({
-    series: Number,
     name: String,
     acts: [{
         type: Schema.Types.ObjectId,
