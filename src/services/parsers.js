@@ -125,7 +125,7 @@ function parseAct(act) {
             if (subtopic) {
                 parsedAct.subtopic = {
                     name: subtopic
-                };
+               };
             }
         }
     }

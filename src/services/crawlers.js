@@ -1,52 +1,43 @@
 import puppeteer, { ElementHandle, Page } from 'puppeteer';
-import { getILCSIndexString, UL_CHILDREN, P_CHILDREN } from './extractors.js';
+import { getILCSIndexString, UL_CHILDREN} from './extractors.js';
 import { parseChapterIndex, parseActIndex } from './parsers.js';
 
-const BASE_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs.asp';
 
-let browser;
-let ilcsPage;
-
-async function initILCSPage() {
-    if (!browser) {
-        browser = await puppeteer.launch();
+class ILCSCrawler {
+    static BASE_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs.asp';
+    constructor(browser, chapters) {
+        this.browser = browser;
+        this.chapters = chapters;
     }
 
-    if (!ilcsPage) {
-        ilcsPage = await browser.newPage();
-        await ilcsPage.goto(BASE_URL);
+    async getActsFromChapter(chapter) {
+        const actsPage = await this.browser.newPage();
+        await actsPage.goto(chapter.url);
+        const actIndexString = await actsPage.$$eval(UL_CHILDREN, getILCSIndexString);
+        actsPage.close();
+        return parseActIndex(actIndexString);
+    }
+
+    async close() {
+        await this.browser.close();
     }
 }
 
-async function closeBrowser() {
-    return await browser.close();
+async function getChapterIndex(ilcsBasePage) {
+    ilcsBasePage = await ilcsBasePage.$$eval(UL_CHILDREN, getILCSIndexString);
+    return parseChapterIndex(ilcsBasePage);
 }
 
-async function getChapterIndex() {
-    ilcsPage = await ilcsPage.$$eval(UL_CHILDREN, getILCSIndexString);
-    return parseChapterIndex(ilcsPage);
+async function initILCSCrawler() {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(ILCSCrawler.BASE_URL);
+    const chapters = await getChapterIndex(page);
+    return new ILCSCrawler(browser, chapters);
 }
 
-async function init() {
-    await initILCSPage();
-    return await getChapterIndex();
-}
+const crawler = await initILCSCrawler();
+console.log(crawler.chapters);
+crawler.close();
 
-async function getActsFromChapter(chapter) {
-    const actsPage = await browser.newPage();
-    await actsPage.goto(chapter.url);
-    const actIndexString = await actsPage.$$eval(UL_CHILDREN, getILCSIndexString);
-    actsPage.close();
-    return parseActIndex(actIndexString);
-}
-
-export async function run() {
-    const chapters = await init();
-    const firstChapter = chapters[0];
-    const acts = await getActsFromChapter(firstChapter);
-    console.log(firstChapter);
-    console.log(acts);
-    closeBrowser();
-}
-
-run();
+export default ILCSCrawler;
