@@ -6,8 +6,16 @@ import { parseChapterIndex, parseActIndex } from './parsers.js';
 class ILCSCrawler {
     static BASE_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs.asp';
     constructor(browser, chapters) {
-        this.browser = browser;
-        this.chapters = chapters;
+        this._browser = browser;
+        this._chapters = chapters;
+    }
+
+    get chapters() {
+        const chaptersCopy = [];
+        for (const chapter of this._chapters) {
+            chaptersCopy.push({...chapter});
+        }
+        return chaptersCopy;
     }
 
     async getActsFromChapter(chapter) {
@@ -15,7 +23,7 @@ class ILCSCrawler {
         await actsPage.goto(chapter.url);
         const actIndexString = await actsPage.$$eval(UL_CHILDREN, getILCSIndexString);
         actsPage.close();
-        return parseActIndex(actIndexString);
+        chapter.acts = parseActIndex(actIndexString);
     }
 
     async close() {
@@ -28,7 +36,7 @@ async function getChapterIndex(ilcsBasePage) {
     return parseChapterIndex(ilcsBasePage);
 }
 
-async function initILCSCrawler() {
+export async function initILCSCrawler() {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(ILCSCrawler.BASE_URL);
