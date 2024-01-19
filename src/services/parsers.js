@@ -88,8 +88,11 @@ function parseChapter(chptString) {
 export function parseChapterIndex(chapterIndexString) {
     const chapterIndexArray = chapterIndexString.split(NL + NL);
     let chapters = [];
-    for (const chapter of chapterIndexArray) {
-        chapters.push(parseChapter(chapter));
+    for (let chapter of chapterIndexArray) {
+        chapter = parseChapter(chapter);
+        if (chapter.title) {
+            chapters.push(chapter);
+        }
     }
     return chapters;
 }
@@ -107,6 +110,8 @@ function parseActTitle(act) {
 function parseActSubtopic(subtopic) {
     return normalizeNbsp(subtopic.split('topic:')[1].trim());
 }
+
+function parseActSection(section) {}
 
 function parseAct(act) {
     act = normalizeNewlines(act);

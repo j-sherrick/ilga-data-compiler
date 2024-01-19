@@ -27,7 +27,7 @@ class ILCSCrawler {
     }
 
     async close() {
-        await this.browser.close();
+        await this._browser.close();
     }
 }
 
