@@ -111,9 +111,7 @@ function parseActSubtopic(subtopic) {
     return normalizeNbsp(subtopic.split('topic:')[1].trim());
 }
 
-function parseActSection(section) {}
-
-function parseAct(act) {
+function parseActDetails(act) {
     act = normalizeNewlines(act);
     act = act.split(NL);
     let parsedAct = {};
@@ -137,11 +135,23 @@ function parseAct(act) {
     return parsedAct;
 }
 
-export function parseActIndex(actIndexString) {
+export function parseActsToArray(actIndexString) {
     const actIndexArray = actIndexString.split(NL + NL);
     let acts = [];
     for (let act of actIndexArray) {
-        acts.push(parseAct(act));
+        acts.push(parseActDetails(act));
     }
     return acts;
 }
+
+
+// SECTION PARSING
+function parseSectionNumber(section) {}
+
+function parseSectionSource(section) {}
+
+function parseSectionText(section) {}
+
+function parseSection(section) {}
+
+function parseActText(act) {}
