@@ -1,6 +1,6 @@
 import puppeteer, { ElementHandle, Page } from 'puppeteer';
 import { getILCSIndexString, UL_CHILDREN} from './extractors.js';
-import { parseChapterIndex, parseActIndex } from './parsers.js';
+import { parseChapterIndex, parseActsToArray } from './parsers.js';
 
 
 class ILCSCrawler {
@@ -18,12 +18,19 @@ class ILCSCrawler {
         return chaptersCopy;
     }
 
+    async gotoWithDelay(url, delay = 300) {
+        const page = await this._browser.newPage();
+        await new Promise(resolve => setTimeout(resolve, delay));
+        await page.goto(url);
+        return page;
+    }
+
     async getActsFromChapter(chapter) {
-        const actsPage = await this.browser.newPage();
-        await actsPage.goto(chapter.url);
+        const actsPage = await this.gotoWithDelay(chapter.url);
         const actIndexString = await actsPage.$$eval(UL_CHILDREN, getILCSIndexString);
         actsPage.close();
-        chapter.acts = parseActIndex(actIndexString);
+        chapter.acts = parseActsToArray(actIndexString);
+        return chapter.acts;
     }
 
     async close() {
@@ -45,7 +52,8 @@ export async function initILCSCrawler() {
 }
 
 const crawler = await initILCSCrawler();
-console.log(crawler.chapters);
+const chapter = await crawler.getActsFromChapter(crawler.chapters[1]);
+console.log(chapter);
 crawler.close();
 
 export default ILCSCrawler;

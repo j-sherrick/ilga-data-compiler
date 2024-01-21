@@ -139,7 +139,9 @@ export function parseActsToArray(actIndexString) {
     const actIndexArray = actIndexString.split(NL + NL);
     let acts = [];
     for (let act of actIndexArray) {
-        acts.push(parseActDetails(act));
+        if(act){
+            acts.push(parseActDetails(act));
+        }
     }
     return acts;
 }
