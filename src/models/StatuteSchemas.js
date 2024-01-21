@@ -53,3 +53,12 @@ const SubtopicSchema = new Schema({
         ref: 'Act'
     }]
 });
+
+const Act = mongoose.model('Act', ActSchema);
+const Chapter = mongoose.model('Chapter', ChapterSchema);
+const Topic = mongoose.model('Topic', TopicSchema);
+const Subtopic = mongoose.model('Subtopic', SubtopicSchema);
+const Section = mongoose.model('Section', SectionSchema);
+
+// Export the models
+export { Act, Chapter, Topic, Subtopic, Section };

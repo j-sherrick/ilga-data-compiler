@@ -5,7 +5,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "test": "node src/services/crawlers.js"
+    "test": "node src/app.js"
   },
   "repository": {
     "type": "git",
@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/j-sherrick/ilga-statute-compiler#readme",
   "dependencies": {
+    "dotenv": "^16.3.2",
     "mongoose": "^8.1.0",
     "puppeteer": "^21.7.0"
   },

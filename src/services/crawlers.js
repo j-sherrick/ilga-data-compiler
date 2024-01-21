@@ -51,9 +51,4 @@ export async function initILCSCrawler() {
     return new ILCSCrawler(browser, chapters);
 }
 
-const crawler = await initILCSCrawler();
-const chapter = await crawler.getActsFromChapter(crawler.chapters[1]);
-console.log(chapter);
-crawler.close();
-
 export default ILCSCrawler;
