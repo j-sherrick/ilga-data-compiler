@@ -11,7 +11,7 @@ const NL = '\n';
 const NBSP_REGEX = /\u00A0+/g;
 const NL_REGEX = /\n+/g;
 const CHAPTER_REGEX = /\d{1,3}/;
-const PARENTHESES_REGEX = /\((.*?)\)/;
+const SOURCE_REGEX = /\((.*?)\)/;
 
 // static statute data
 const SERIES_NUMBERS = [
@@ -164,14 +164,14 @@ function parseSectionHeader(header) {
 }
 
 function parseSectionSource(source) {
-    return normalizeNbsp(source.match(PARENTHESES_REGEX)[1]).trim();
+    return normalizeNbsp(source.match(SOURCE_REGEX)[1]).trim();
 }
 
 function parseSectionText(section) {
     let text = '';
-    for (line in section) {
-        if(!line.includes('ILCS') && !line.includes('Source')) {
-            text += line + '\n';
+    for (let line of section) {
+        if(!line.includes('ILCS') && !line.includes('Source') && line.trim() !== '') {
+            text += normalizeNbsp(line.trim());
         }
     }
     return text;

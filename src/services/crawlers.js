@@ -1,6 +1,6 @@
 import puppeteer, { ElementHandle, Page } from 'puppeteer';
-import { getILCSIndexString, UL_CHILDREN} from './extractors.js';
-import { parseChapterIndex, parseActsToArray } from './parsers.js';
+import { getILCSIndexString, getILCSAct, P_CHILDREN, UL_CHILDREN} from './extractors.js';
+import { parseChapterIndex, parseActsToArray, parseActText } from './parsers.js';
 
 
 class ILCSCrawler {
