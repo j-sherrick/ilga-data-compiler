@@ -27,7 +27,7 @@ export function getILCSAct(pChildren) {
 
     for (const pChild of pChildren) {
         if (pChild.tagName === 'TABLE') {
-            actText += pChild.innerText + '\n\n';
+            actText += pChild.innerText + '<TABLE_END>\n';
         }
     }
 

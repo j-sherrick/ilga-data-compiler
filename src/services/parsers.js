@@ -11,6 +11,7 @@ const NL = '\n';
 const NBSP_REGEX = /\u00A0+/g;
 const NL_REGEX = /\n+/g;
 const CHAPTER_REGEX = /\d{1,3}/;
+const PARENTHESES_REGEX = /\((.*?)\)/;
 
 // static statute data
 const SERIES_NUMBERS = [
@@ -151,35 +152,49 @@ export function parseActsToArray(actIndexString) {
 function parseSectionHeader(header) {
     header = normalizeNbsp(header);
     let [number, reference] = header.split(') (');
-    number = number.split('/')[1].slice(0, -1);
-
-    let parsedHeader = { number };
+    let parsedHeader = {};
     if(reference) {
-        parsedHeader.reference = reference.match(/\((.*?)\)/)[1];
+        parsedHeader.reference = reference.slice(0, -1);
+        parsedHeader.number = number.split('/')[1];
+    }
+    else {
+        parsedHeader.number = number.split('/')[1].slice(0, -1);
     }
     return parsedHeader;
 }
 
 function parseSectionSource(source) {
-    return normalizeNbsp(source.match(/\((.*?)\)/)[1]).trim();
+    return normalizeNbsp(source.match(PARENTHESES_REGEX)[1]).trim();
 }
 
 function parseSectionText(section) {
-    return normalizeNewlines(section.slice(1, -1)).trim();
+    let text = '';
+    for (line in section) {
+        if(!line.includes('ILCS') && !line.includes('Source')) {
+            text += line + '\n';
+        }
+    }
+    return text;
 }
 
 function parseSection(section) {
     section = normalizeNewlines(section);
     section = section.split(NL);
-    const sectionHeader = parseSectionHeader(section[0]);
-    const sectionSource = parseSectionSource(section[section.length - 1]);
-    const sectionText = parseSectionText(section);
+    const header = parseSectionHeader(section[0]);
+    const source = parseSectionSource(section[section.length - 1]);
+    const text = parseSectionText(section);
+    return { header, text, source };
 }
 
 export function parseActText(act) {
-    const sections = act.split(NL + NL);
+    const sections = act
+        .split('<TABLE_END>\n')
+        .filter(section => section !== '')
+        .map(section => section.trim());
     let parsedSections = [];
     for (const section of sections) {
-        parsedSections.push(parseSection(section));
+        let parsedSection = parseSection(section);
+        parsedSections.push(parsedSection);
     }
+    return parsedSections
 }
