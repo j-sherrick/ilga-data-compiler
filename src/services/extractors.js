@@ -33,19 +33,3 @@ export function getILCSAct(pChildren) {
 
     return actText;
 }
-
-// export function getILCSActs(ulChildren) {
-//     let actIndexString = '';
-
-//     for (const ulChild of ulChildren) {
-//         if (ulChild.tagName === 'P') {
-//             actIndexString +=  'category:' + ulChild.innerText + '\n';
-//         }
-//         else if (ulChild.tagName === 'LI') {
-//             actIndexString += 'title' + ulChild.innerText + '\n';
-//             actIndexString += 'url' + ulChild.querySelector('a').href + '\n';
-//         }
-//     }
-
-//     return actIndexString;
-// }

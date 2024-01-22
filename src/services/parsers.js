@@ -147,13 +147,39 @@ export function parseActsToArray(actIndexString) {
 }
 
 
-// SECTION PARSING
-function parseSectionNumber(section) {}
+// ACT TEXT PARSING
+function parseSectionHeader(header) {
+    header = normalizeNbsp(header);
+    let [number, reference] = header.split(') (');
+    number = number.split('/')[1].slice(0, -1);
 
-function parseSectionSource(section) {}
+    let parsedHeader = { number };
+    if(reference) {
+        parsedHeader.reference = reference.match(/\((.*?)\)/)[1];
+    }
+    return parsedHeader;
+}
 
-function parseSectionText(section) {}
+function parseSectionSource(source) {
+    return normalizeNbsp(source.match(/\((.*?)\)/)[1]).trim();
+}
 
-function parseSection(section) {}
+function parseSectionText(section) {
+    return normalizeNewlines(section.slice(1, -1)).trim();
+}
 
-function parseActText(act) {}
+function parseSection(section) {
+    section = normalizeNewlines(section);
+    section = section.split(NL);
+    const sectionHeader = parseSectionHeader(section[0]);
+    const sectionSource = parseSectionSource(section[section.length - 1]);
+    const sectionText = parseSectionText(section);
+}
+
+export function parseActText(act) {
+    const sections = act.split(NL + NL);
+    let parsedSections = [];
+    for (const section of sections) {
+        parsedSections.push(parseSection(section));
+    }
+}

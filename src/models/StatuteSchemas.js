@@ -2,9 +2,12 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const SectionSchema = new Schema({
-    number: String,
-    source: String,
-    text: String
+    header: {
+        number: String,
+        reference: String
+    },
+    text: String,
+    source: String
 });
 
 const ActSchema = new Schema({
