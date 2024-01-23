@@ -11,5 +11,7 @@ await actPage.goto(ACT);
 
 let act = await actPage.$$eval(P_CHILDREN, getILCSAct);
 act = parseActText(act);
-console.log(act);
+for (let section of act) {
+    console.log(section);
+}
 browser.close();

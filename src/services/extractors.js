@@ -27,9 +27,21 @@ export function getILCSAct(pChildren) {
 
     for (const pChild of pChildren) {
         if (pChild.tagName === 'TABLE') {
-            actText += pChild.innerText + '<TABLE_END>\n';
+            actText += pChild.innerText + '<TABLE_END>';
         }
     }
 
     return actText;
+}
+
+export function actHasArticles(pElement) {
+    const aNodes = pElement.querySelectorAll('a');
+    let hasArticles = false;
+    for (const aNode of aNodes) {
+        if (aNode.innerText.toLowerCase().includes('entire act')) {
+            hasArticles = true;
+            break;
+        }
+    }
+    return hasArticles;
 }

@@ -43,7 +43,12 @@ function normalizeNbsp(line) {
 }
 
 function normalizeNewlines(section) {
-    return section.replace(NL_REGEX, NL);
+    let temp = section.replace(NL_REGEX, NL);
+    return temp;
+}
+
+function removeNewlines(section) {
+    return section.replace(NL_REGEX, ' ');
 }
 
 // CHAPTER PARSING
@@ -168,18 +173,19 @@ function parseSectionSource(source) {
 }
 
 function parseSectionText(section) {
-    let text = '';
-    for (let line of section) {
-        if(!line.includes('ILCS') && !line.includes('Source') && line.trim() !== '') {
-            text += normalizeNbsp(line.trim());
-        }
-    }
+    let text = section.slice(1, -1).join(' ');
     return text;
+    // let text = '';
+    // for (let line of section) {
+    //     if(!line.includes('ILCS') && !line.includes('Source') && line.trim() !== '') {
+    //         text += normalizeNbsp(line.trim());
+    //     }
+    // }
+    // return text;
 }
 
 function parseSection(section) {
-    section = normalizeNewlines(section);
-    section = section.split(NL);
+    section = section.split(NL).map(el => normalizeNbsp(el).trim()).filter(el => el !== '');
     const header = parseSectionHeader(section[0]);
     const source = parseSectionSource(section[section.length - 1]);
     const text = parseSectionText(section);
@@ -187,10 +193,12 @@ function parseSection(section) {
 }
 
 export function parseActText(act) {
-    const sections = act
-        .split('<TABLE_END>\n')
-        .filter(section => section !== '')
-        .map(section => section.trim());
+    const sections = act.split('<TABLE_END>').filter( section => {
+        return  section &&
+                section !== ' ' &&
+                section !== '\n' &&
+                section !== '\n\n';
+    }).map(section => section.trim());
     let parsedSections = [];
     for (const section of sections) {
         let parsedSection = parseSection(section);
