@@ -13,16 +13,11 @@ const SectionSchema = new Schema({
 const ActSchema = new Schema({
     prefix: String,
     title: String,
-    citation: String,
     url: String,
     sections: [SectionSchema],
     subtopic: {
         type: Schema.Types.ObjectId,
         ref: 'Subtopic'
-    },
-    chapter: {
-        type: Schema.Types.ObjectId,
-        ref: 'Chapter'
     }
 });
 

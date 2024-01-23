@@ -35,7 +35,7 @@ export function getILCSAct(pChildren) {
     return actText;
 }
 
-export function getEntireActUrl(aNodes) {
+export function getActHasArticles(aNodes) {
     let href = '';
     for (const aNode of aNodes) {
         if (aNode.innerText.toLowerCase().includes('entire act')) {
