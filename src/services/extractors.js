@@ -2,6 +2,7 @@ import { get } from "mongoose";
 
 export const UL_CHILDREN = 'td ul > *';
 export const P_CHILDREN = 'td p > *'
+export const TD_P_ANCHORS = 'td p a';
 
 
 export function getILCSIndexString(ulChildren) {
@@ -34,14 +35,13 @@ export function getILCSAct(pChildren) {
     return actText;
 }
 
-export function actHasArticles(pElement) {
-    const aNodes = pElement.querySelectorAll('a');
-    let hasArticles = false;
+export function getEntireActUrl(aNodes) {
+    let href = '';
     for (const aNode of aNodes) {
         if (aNode.innerText.toLowerCase().includes('entire act')) {
-            hasArticles = true;
+            href = aNode.href;
             break;
         }
     }
-    return hasArticles;
+    return href;
 }
