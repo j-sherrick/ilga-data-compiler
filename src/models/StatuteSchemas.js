@@ -14,6 +14,10 @@ const ActSchema = new Schema({
     prefix: String,
     title: String,
     url: String,
+    chapter: {
+        type: Schema.Types.ObjectId,
+        ref: 'Chapter'
+    },
     sections: [SectionSchema],
     subtopic: {
         type: Schema.Types.ObjectId,
