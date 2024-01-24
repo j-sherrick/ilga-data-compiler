@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const { mongoUser, mongoPW, mongoHost, mongoPort, mongoDB } = process.env;
 
-// encode all Mongo URI component strings
+// encode all portions of Mongo URI string
 const MONGO_USER = encodeURIComponent(mongoUser);
 const MONGO_PW = encodeURIComponent(mongoPW);
 const MONGO_DB = encodeURIComponent(mongoDB);
