@@ -8,28 +8,21 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-async function populateActs(chapters, crawler) {
-    for (const chapter of chapters) {
-        const acts = await crawler.getActsFromChapter(chapter);
-        console.log(`Found ${acts.length} acts in chapter ${chapter.number}: ${chapter.title}`);
-        let answer = await new Promise(resolve => {
-               rl.question("Do you want to save these acts? (y/n)", resolve);
+async function saveActs(acts, chapter) {
+    for (const act of acts) {
+        const newAct = new Act({
+            prefix: act.prefix,
+            title: act.title,
+            url: act.url,
+            chapter: chapter._id
         });
-        answer = answer.toLowerCase();
-        if (answer === 'y' || answer === 'yes') {
-               console.log(`Saving ${acts.length} acts to the database...`);
-               for (const act of acts) {
-                   console.log(`Saving ${chapter.number} ILCS ${act.prefix}/\t${act.title}...`);
-               }
-        }
-        if (answer === 'n' || answer === 'no') {
-            console.log(`Skipping ${acts.length} acts in CHAPTER ${chapter.number} ${chapter.title}`);
-        }
-       //  chapter.acts = acts;
+        await newAct.save();
+        chapter.acts.push(newAct._id);
     }
+    await chapter.save();
 }
 
-function printChaptersWithTopics(chapters) {
+function printChapters(chapters) {
     let currentTopic ={};
     for (const chapter of chapters) {
         if (chapter.topic.name !== currentTopic.name) {
