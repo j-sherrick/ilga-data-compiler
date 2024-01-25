@@ -24,10 +24,8 @@ class ILCSCrawler {
     }
 
     get chapters() {
-        const chaptersCopy = [];
-        for (const chapter of this._index) {
-            chaptersCopy.push({...chapter});
-        }
+        let chaptersCopy = [];
+        chaptersCopy = this._index;
         return chaptersCopy;
     }
 
