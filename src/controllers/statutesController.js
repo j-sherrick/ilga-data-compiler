@@ -8,18 +8,24 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-async function saveActs(acts, chapter) {
+async function saveActsToChapter(acts, chapter) {
     for (const act of acts) {
-        const newAct = new Act({
-            prefix: act.prefix,
-            title: act.title,
-            url: act.url,
-            chapter: chapter._id
-        });
-        await newAct.save();
+        const newAct = saveAct(act, chapter._id);
         chapter.acts.push(newAct._id);
     }
     await chapter.save();
+}
+
+async function saveAct(act, chapterId) {
+    const newAct = new Act({
+        prefix: act.prefix,
+        title: act.title,
+        url: act.url,
+        chapter: chapterId
+    });
+    await newAct.save();
+    
+    return newAct;
 }
 
 function printChapters(chapters) {
