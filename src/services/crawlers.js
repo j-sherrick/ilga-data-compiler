@@ -3,7 +3,7 @@ import puppeteer, { ElementHandle, Page } from 'puppeteer';
 import {
     getILCSIndexString,
     getILCSAct,
-    getActHasArticles,
+    hasEntireAct,
     P_CHILDREN,
     UL_CHILDREN,
     TD_P_ANCHORS
@@ -46,9 +46,9 @@ class ILCSCrawler {
     async getTextFromAct(act) {
         const actPage = await this.gotoWithDelay(act.url);
         let actText = '';
-        const entireText = await actPage.$$eval(TD_P_ANCHORS, getActHasArticles);
-        if (entireText) {
-            await actPage.goto(entireText);
+        const entirePage = await actPage.$$eval(TD_P_ANCHORS, hasEntireAct);
+        if (entirePage) {
+            await actPage.goto(entirePage);
             actText = await actPage.$$eval(P_CHILDREN, getILCSAct);
             actPage.close();
             return parseActText(actText);
@@ -59,7 +59,6 @@ class ILCSCrawler {
             return parseActText(actText);
         }
     }
-
     
     async close() {
         await this._browser.close();
