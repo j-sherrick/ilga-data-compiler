@@ -23,8 +23,18 @@ async function saveAct(act, chapterId) {
         url: act.url,
         chapter: chapterId
     });
+    if (act.subtopic) {
+        const subtopic = await Subtopic.findOne({ name: act.subtopic });
+        if (subtopic) {
+            newAct.subtopic = subtopic._id;
+            subtopic.acts.push(newAct._id);
+            await subtopic.save();
+        } else {
+            console.log(`Subtopic ${act.subtopic} not found`);
+        }
+    }
     await newAct.save();
-    
+
     return newAct;
 }
 
@@ -37,6 +47,18 @@ function printChapters(chapters) {
         }
         console.log(`|\n--- CHAPTER ${chapter.number} ${chapter.title}`);
     }
+}
+
+async function saveSectionsToAct(sections, act) {
+    for (const section of sections) {
+        const newSection = saveSection(section, act._id);
+        act.sections.push(newSection._id);
+    }
+    await act.save();
+}
+
+async function saveSection(section, actId) {
+    
 }
 
 export default {
