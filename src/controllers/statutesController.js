@@ -1,5 +1,6 @@
 import { initILCSCrawler } from "../services/crawlers.js";
 import { Chapter, Act, Topic, Subtopic } from "../models/StatuteSchemas.js";
+import { parseActsToArray } from "../services/parsers.js";
 import readline from "readline";
 import connectDB from "./connectDB.js";
 
@@ -81,16 +82,14 @@ async function saveILCSChapter(chapter, crawler) {
         title: chapter.title,
         topic: topicId
     });
-    const acts = crawler.getActsFromChapter(chapter);
-    await newChapter.save();
-
+    let acts = crawler.getActsFromChapter(chapter);
+    newChapter.acts = parseActsToArray(acts);
     return newChapter;
 }
 
 async function compileStatutes(chapters, crawler) {
     let currentTopic = chapters[0].topic;
     for (const chapter of chapters) {
-       
         
     }
 }
