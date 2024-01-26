@@ -7,7 +7,12 @@ const SectionSchema = new Schema({
         reference: String
     },
     text: String,
-    source: String
+    source: String,
+    act: {
+        type: Schema.Types.ObjectId,
+        ref: 'Act'
+    
+    }
 });
 
 const ActSchema = new Schema({
