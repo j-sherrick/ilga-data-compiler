@@ -20,71 +20,6 @@ function printChapters(chapters) {
     }
 }
 
-async function saveActsToChapter(acts, chapter) {
-    for (const act of acts) {
-        const newAct = saveAct(act, chapter._id);
-        chapter.acts.push(newAct._id);
-    }
-    await chapter.save();
-}
-
-async function saveAct(act, chapterId) {
-    const newAct = new Act({
-        prefix: act.prefix,
-        title: act.title,
-        url: act.url,
-        chapter: chapterId
-    });
-    if (act.subtopic) {
-        const subtopic = await Subtopic.findOne({ name: act.subtopic });
-        if (subtopic) {
-            newAct.subtopic = subtopic._id;
-            subtopic.acts.push(newAct._id);
-            await subtopic.save();
-        } else {
-            console.log(`Subtopic ${act.subtopic} not found`);
-        }
-    }
-    await newAct.save();
-
-    return newAct;
-}
-
-async function saveSectionsToAct(sections, act) {
-    for (const section of sections) {
-        const newSection = saveSection(section, act._id);
-        act.sections.push(newSection._id);
-    }
-    await act.save();
-
-    return act;
-}
-
-async function compileStatutes(chapters, crawler) {
-    let currentTopic = chapters[0].topic;
-    for (const chapter of chapters) {
-        
-    }
-}
-
-async function createTopic(topic, chapterId) {
-    const newTopic = new Topic({
-        series: topic.series,
-        name: topic.name
-    });
-    newTopic.chapters.push(chapterId);
-
-    return newTopic;
-}
-
-export default {
-    async run() {
-        const crawler = await initILCSCrawler();
-        const chapters  = crawler.chapters;
-        
-    }    
-}
-
 function getSection(section, actId) {
     const newSection = new Section({
         header: {
@@ -152,7 +87,20 @@ function getSubtopic(subtopic, actId) {
     return newSubtopic;
 }
 
-async function getActsArrayFromChapter(chapter, crawler) {
-    const acts = await crawler.getActsFromChapter(chapter);
-    return getActsArray(acts, chapter._id);
+export default {
+    async run() {
+        const crawler = await initILCSCrawler();
+        const chapters  = crawler.chapters;
+        let currentTopic = {};
+        let currentChapter = {};
+        for (const chapter of chapters) {
+            if (chapter.topic.name !== currentTopic.name) {
+                currentTopic = getTopic(chapter.topic);
+                console.log(`\n\n${currentTopic.series}: ${currentTopic.name}`);
+            }
+            console.log(`|\n--- CHAPTER ${chapter.number} ${chapter.title}`);
+            currentChapter = getChapter(chapter, currentTopic._id);
+            currentTopic.chapters.push(currentChapter._id);
+        }
+    }    
 }
