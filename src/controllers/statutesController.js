@@ -60,33 +60,6 @@ async function saveSectionsToAct(sections, act) {
     return act;
 }
 
-async function saveSection(section, actId) {
-    const newSection = new Section({
-        header: {
-            number: section.header.number,
-            reference: section.header.reference
-        },
-        text: section.text,
-        source: section.source,
-        act: actId
-    });
-    await newSection.save();
-
-    return newSection;
-}
-
-async function saveILCSChapter(chapter, crawler) {
-    const newChapter = new Chapter({
-        number: chapter.number,
-        url: chapter.url,
-        title: chapter.title,
-        topic: topicId
-    });
-    let acts = crawler.getActsFromChapter(chapter);
-    newChapter.acts = parseActsToArray(acts);
-    return newChapter;
-}
-
 async function compileStatutes(chapters, crawler) {
     let currentTopic = chapters[0].topic;
     for (const chapter of chapters) {
@@ -110,4 +83,46 @@ export default {
         const chapters  = crawler.chapters;
         
     }    
-}    
+}
+
+function getSection(section, actId) {
+    const newSection = new Section({
+        header: {
+            number: section.header.number,
+            reference: section.header.reference
+        },
+        text: section.text,
+        source: section.source,
+        act: actId
+    });
+    return newSection;
+}
+
+function getAct(act, chapterId) {
+    const newAct = new Act({
+        prefix: act.prefix,
+        title: act.title,
+        url: act.url,
+        chapter: chapterId
+    });
+}
+
+function getSubtopic(subtopic, actId) {
+    const newSubtopic = new Subtopic({
+        name: subtopic.name,
+        acts: []
+    });
+    newSubtopic.acts.push(actId);
+    return newSubtopic;
+}
+
+function getChapter(chapter, topicId) {
+    const newChapter = new Chapter({
+        number: chapter.number,
+        url: chapter.url,
+        title: chapter.title,
+        topic: topicId,
+        acts: []
+    });
+    return newChapter;
+}
