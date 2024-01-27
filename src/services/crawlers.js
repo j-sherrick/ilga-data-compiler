@@ -36,15 +36,15 @@ class ILCSCrawler {
         return page;
     }
 
-    async getActsFromChapter(chapter) {
-        const chapterPage = await this.gotoWithDelay(chapter.url);
+    async getActsFromUrl(url) {
+        const chapterPage = await this.gotoWithDelay(url);
         const acts = await chapterPage.$$eval(UL_CHILDREN, getILCSIndexString);
         chapterPage.close();
         return parseActsToArray(acts);
     }
 
-    async getTextFromAct(act) {
-        const actPage = await this.gotoWithDelay(act.url);
+    async getSectionsFromUrl(url) {
+        const actPage = await this.gotoWithDelay(url);
         let actText = '';
         const entirePage = await actPage.$$eval(TD_P_ANCHORS, hasEntireAct);
         if (entirePage) {

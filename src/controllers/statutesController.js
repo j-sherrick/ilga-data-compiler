@@ -46,14 +46,32 @@ function getAct(act, chapterId) {
         prefix: act.prefix,
         title: act.title,
         url: act.url,
-        chapter: chapterId
+        chapter: chapterId,
+        sections: [],
     });
 }
 
 function getActsArray(acts, chapterId) {
     let actsArray = [];
+    let subtopicsArray = [];
+
+    let currentAct = {};
+    let currentSubtopic = {};
+
     for (const act of acts) {
-        actsArray.push(getAct(act, chapterId));
+        currentAct = getAct(act, chapterId);
+        if(act.subtopic) {
+            if (act.subtopic.name !== currentSubtopic.name) {
+                currentSubtopic = getSubtopic(act.subtopic);
+
+                currentSubtopic.acts.push(currentAct._id);
+                subtopicsArray.push(currentSubtopic);
+                console.log(`\n\n${currentSubtopic.name}`);
+
+                currentAct.subtopic = currentSubtopic._id;
+            }
+        }
+        actsArray.push(currentAct);
     }
     return actsArray;
 }
@@ -78,17 +96,19 @@ function getTopic(topic) {
     return newTopic;
 }
 
-function getSubtopic(subtopic, actId) {
+function getSubtopic(subtopic) {
     const newSubtopic = new Subtopic({
         name: subtopic.name,
         acts: []
     });
-    newSubtopic.acts.push(actId);
     return newSubtopic;
 }
 
 export default {
-    async run() {
+    async initILCSCollection() {
+        await connectDB();
+
+
         const crawler = await initILCSCrawler();
         const chapters  = crawler.chapters;
         let currentTopic = {};
@@ -101,6 +121,22 @@ export default {
             console.log(`|\n--- CHAPTER ${chapter.number} ${chapter.title}`);
             currentChapter = getChapter(chapter, currentTopic._id);
             currentTopic.chapters.push(currentChapter._id);
+
+
+            let acts = await crawler.getActsFromUrl(chapter.url);
+            acts = parseActsToArray(acts);
+            acts = getActsArray(acts, currentChapter._id);      // Get array of Acts
+            for (const act of acts) {
+                currentChapter.acts.push(act._id);
+
+                let sections = await crawler.getSectionsFromUrl(act.url);
+                sections = parseActText(sections);
+                sections = getSectionsArray(sections, act._id);  // Get array of Sections
+                for (const section of sections) {
+                    act.sections.push(section._id);
+                }
+                await act.save();
+            }
         }
     }    
 }
