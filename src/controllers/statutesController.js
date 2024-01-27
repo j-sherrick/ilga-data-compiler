@@ -98,6 +98,14 @@ function getSection(section, actId) {
     return newSection;
 }
 
+function getSectionsArray(sections, actId) {
+    let sectionsArray = [];
+    for (const section of sections) {
+        sectionsArray.push(getSection(section, actId));
+    }
+    return sectionsArray;
+}
+
 function getAct(act, chapterId) {
     const newAct = new Act({
         prefix: act.prefix,
@@ -107,13 +115,12 @@ function getAct(act, chapterId) {
     });
 }
 
-function getSubtopic(subtopic, actId) {
-    const newSubtopic = new Subtopic({
-        name: subtopic.name,
-        acts: []
-    });
-    newSubtopic.acts.push(actId);
-    return newSubtopic;
+function getActsArray(acts, chapterId) {
+    let actsArray = [];
+    for (const act of acts) {
+        actsArray.push(getAct(act, chapterId));
+    }
+    return actsArray;
 }
 
 function getChapter(chapter, topicId) {
@@ -125,4 +132,27 @@ function getChapter(chapter, topicId) {
         acts: []
     });
     return newChapter;
+}
+
+function getTopic(topic) {
+    const newTopic = new Topic({
+        series: topic.series,
+        name: topic.name,
+        chapters: []
+    });
+    return newTopic;
+}
+
+function getSubtopic(subtopic, actId) {
+    const newSubtopic = new Subtopic({
+        name: subtopic.name,
+        acts: []
+    });
+    newSubtopic.acts.push(actId);
+    return newSubtopic;
+}
+
+async function getActsArrayFromChapter(chapter, crawler) {
+    const acts = await crawler.getActsFromChapter(chapter);
+    return getActsArray(acts, chapter._id);
 }
