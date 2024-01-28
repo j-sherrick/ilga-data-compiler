@@ -91,7 +91,7 @@ function parseChapter(chptString) {
     return chapter;
 }
 
-export function parseChapterIndex(chapterIndexString) {
+function parseChaptersArray(chapterIndexString) {
     const chapterIndexArray = chapterIndexString.split(NL + NL);
     let chapters = [];
     for (let chapter of chapterIndexArray) {
@@ -141,7 +141,7 @@ function parseActDetails(act) {
     return parsedAct;
 }
 
-export function parseActsToArray(actIndexString) {
+function parseActsArray(actIndexString) {
     const actIndexArray = actIndexString.split(NL + NL);
     let acts = [];
     for (let act of actIndexArray) {
@@ -175,13 +175,6 @@ function parseSectionSource(source) {
 function parseSectionText(section) {
     let text = section.slice(1, -1).join(' ');
     return text;
-    // let text = '';
-    // for (let line of section) {
-    //     if(!line.includes('ILCS') && !line.includes('Source') && line.trim() !== '') {
-    //         text += normalizeNbsp(line.trim());
-    //     }
-    // }
-    // return text;
 }
 
 function parseSection(section) {
@@ -192,7 +185,7 @@ function parseSection(section) {
     return { header, text, source };
 }
 
-export function parseActText(act) {
+function parseActText(act) {
     const sections = act.split('<TABLE_END>').filter( section => {
         return  section &&
                 section !== ' ' &&
@@ -206,3 +199,111 @@ export function parseActText(act) {
     }
     return parsedSections
 }
+
+
+// MODEL PARSING
+function getSection(section, actId) {
+    const newSection = new Section({
+        header: {
+            number: section.header.number,
+            reference: section.header.reference
+        },
+        text: section.text,
+        source: section.source,
+        act: actId
+    });
+    return newSection;
+}
+
+function getSectionsArray(sections, actId) {
+    let sectionsArray = [];
+    for (const section of sections) {
+        sectionsArray.push(getSection(section, actId));
+    }
+    return sectionsArray;
+}
+
+function getAct(act, chapterId) {
+    const newAct = new Act({
+        prefix: act.prefix,
+        title: act.title,
+        url: act.url,
+        chapter: chapterId,
+        sections: [],
+    });
+}
+
+function getActsArray(acts, chapterId) {
+    let actsArray = [];
+    let subtopicsArray = [];
+
+    let currentAct = {};
+    let currentSubtopic = {};
+
+    for (const act of acts) {
+        currentAct = getAct(act, chapterId);
+        if(act.subtopic) {
+            if (act.subtopic.name !== currentSubtopic.name) {
+                currentSubtopic = getSubtopic(act.subtopic);
+
+                currentSubtopic.acts.push(currentAct._id);
+                subtopicsArray.push(currentSubtopic);
+                console.log(`\n\n${currentSubtopic.name}`);
+
+                currentAct.subtopic = currentSubtopic._id;
+            }
+        }
+        actsArray.push(currentAct);
+    }
+    return actsArray;
+}
+
+function getChapter(chapter, topicId) {
+    const newChapter = new Chapter({
+        number: chapter.number,
+        url: chapter.url,
+        title: chapter.title,
+        topic: topicId,
+        acts: []
+    });
+    return newChapter;
+}
+
+function getTopic(topic) {
+    const newTopic = new Topic({
+        series: topic.series,
+        name: topic.name,
+        chapters: []
+    });
+    return newTopic;
+}
+
+function getSubtopic(subtopic) {
+    const newSubtopic = new Subtopic({
+        name: subtopic.name,
+        acts: []
+    });
+    return newSubtopic;
+}
+
+export default {
+
+    objectFactory() {
+        return {
+            parseChaptersToArray: parseChaptersArray,
+            parseActsToArray: parseActsArray,
+            parseActText
+        }
+    },
+    
+    modelFactory() {
+        return {
+            getSectionsArray,
+            getActsArray,
+            getChapter,
+            getTopic,
+            getSubtopic
+        
+        }
+    }
+};

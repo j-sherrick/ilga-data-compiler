@@ -7,13 +7,13 @@ import {
     P_CHILDREN,
     UL_CHILDREN,
     TD_P_ANCHORS
-} from './extractors.js';
+} from './ILCSExtractor.js';
 
 import {
-    parseChapterIndex,
+    parseChaptersToArray,
     parseActsToArray,
     parseActText
-} from './parsers.js';
+} from './ILCSFactory.js';
 
 
 class ILCSCrawler {
@@ -70,7 +70,7 @@ export async function initILCSCrawler() {
     const basePage = await browser.newPage();
     await basePage.goto(ILCSCrawler.BASE_URL);
     let index = await basePage.$$eval(UL_CHILDREN, getILCSIndexString);
-    index = parseChapterIndex(index);
+    index = parseChaptersToArray(index);
     return new ILCSCrawler(browser, index);
 }
 
