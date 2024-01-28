@@ -1,4 +1,13 @@
 // Description: This file contains functions for parsing the chapter and act
+import {
+    Section,
+    Act,
+    Chapter,
+    Topic,
+    Subtopic
+} from '../models/StatuteSchemas.js';
+
+import { get } from "mongoose";
 
 // keywords returned by the extractors
 const TITLE = 'title';
@@ -235,38 +244,34 @@ function getAct(act, chapterId) {
 
 function getActsArray(acts, chapterId) {
     let actsArray = [];
-    let subtopicsArray = [];
-
     let currentAct = {};
-    let currentSubtopic = {};
 
     for (const act of acts) {
         currentAct = getAct(act, chapterId);
-        if(act.subtopic) {
-            if (act.subtopic.name !== currentSubtopic.name) {
-                currentSubtopic = getSubtopic(act.subtopic);
-
-                currentSubtopic.acts.push(currentAct._id);
-                subtopicsArray.push(currentSubtopic);
-                console.log(`\n\n${currentSubtopic.name}`);
-
-                currentAct.subtopic = currentSubtopic._id;
-            }
-        }
         actsArray.push(currentAct);
     }
     return actsArray;
 }
 
-function getChapter(chapter, topicId) {
+function getChapter(chapter) {
     const newChapter = new Chapter({
         number: chapter.number,
         url: chapter.url,
         title: chapter.title,
-        topic: topicId,
+        topic: {},
         acts: []
     });
     return newChapter;
+}
+
+function getChaptersArray(chapters) {
+    let chaptersArray = [];
+    let currentChapter = {};
+    for (const chapter of chapters) {
+        currentChapter = getChapter(chapter);
+        chaptersArray.push(currentChapter);
+    }
+    return chaptersArray;
 }
 
 function getTopic(topic) {
@@ -278,6 +283,21 @@ function getTopic(topic) {
     return newTopic;
 }
 
+function getTopicsArray(chapters) {
+    let topics = [];
+    let currentTopic = {};
+    for (const chapter of chapters) {
+        if (currentTopic.name !== chapter.topic.name) {
+            currentTopic = getTopic(chapter.topic);
+            currentTopic.chapters.push(chapter._id);
+            topics.push(currentTopic);
+        }
+        currentTopic.chapters.push(chapter._id);
+        chapter.topic = currentTopic._id;
+    }
+    return topics;
+}
+
 function getSubtopic(subtopic) {
     const newSubtopic = new Subtopic({
         name: subtopic.name,
@@ -286,12 +306,31 @@ function getSubtopic(subtopic) {
     return newSubtopic;
 }
 
+function getSubtopicsArray(acts) {
+    let subtopics = [];
+    let currentSubtopic = {};
+    for (const act of acts) {
+        if (currentSubtopic.name !== act.subtopic.name) {
+            currentSubtopic = getSubtopic(act.subtopic);
+            currentSubtopic.acts.push(act._id);
+            subtopics.push(currentSubtopic);
+        }
+        currentSubtopic.acts.push(act._id);
+    }
+    return subtopics;
+}
+
+function initILCS(chapters, topics) {
+    let chapterModels = getChaptersArray(chapters);
+    topics = getTopicsArray(chapterModels);
+}
+
 export default {
 
     objectFactory() {
         return {
-            parseChaptersToArray: parseChaptersArray,
-            parseActsToArray: parseActsArray,
+            parseChaptersArray,
+            parseActsArray,
             parseActText
         }
     },
@@ -301,9 +340,11 @@ export default {
             getSectionsArray,
             getActsArray,
             getChapter,
+            getChaptersArray,
             getTopic,
-            getSubtopic
-        
+            getTopicsArray,
+            getSubtopic,
+            getSubtopicsArray
         }
     }
 };

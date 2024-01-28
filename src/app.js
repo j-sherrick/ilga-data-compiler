@@ -2,4 +2,4 @@ import 'dotenv/config';
 
 import controller from './controllers/statutesController.js';
 
-await controller.run();
+await controller.initILCSCollection();

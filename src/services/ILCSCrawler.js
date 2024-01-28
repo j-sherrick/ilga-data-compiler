@@ -9,12 +9,13 @@ import {
     TD_P_ANCHORS
 } from './ILCSExtractor.js';
 
-import {
-    parseChaptersToArray,
-    parseActsToArray,
-    parseActText
-} from './ILCSFactory.js';
+import ILCSFactory from './ILCSFactory.js';
 
+const { 
+    parseActText,
+    parseActsArray,
+    parseChaptersArray
+} = ILCSFactory.objectFactory();
 
 class ILCSCrawler {
     static BASE_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs.asp';
@@ -40,7 +41,7 @@ class ILCSCrawler {
         const chapterPage = await this.gotoWithDelay(url);
         const acts = await chapterPage.$$eval(UL_CHILDREN, getILCSIndexString);
         chapterPage.close();
-        return parseActsToArray(acts);
+        return parseActsArray(acts);
     }
 
     async getSectionsFromUrl(url) {
@@ -70,7 +71,7 @@ export async function initILCSCrawler() {
     const basePage = await browser.newPage();
     await basePage.goto(ILCSCrawler.BASE_URL);
     let index = await basePage.$$eval(UL_CHILDREN, getILCSIndexString);
-    index = parseChaptersToArray(index);
+    index = parseChaptersArray(index);
     return new ILCSCrawler(browser, index);
 }
 
