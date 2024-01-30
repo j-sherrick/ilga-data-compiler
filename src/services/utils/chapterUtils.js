@@ -3,11 +3,11 @@ import { normalizeNbsp } from './stringUtils.js';
 import { NL, TITLE, TOPIC, HREF, SERIES_NAMES, SERIES_NUMBERS } from '../constants/strings.js';
 import { CHAPTER_REGEX } from '../constants/regex.js';
 
-function parseChapterNumber(titleString) {
+export function parseChapterNumber(titleString) {
     return titleString.match(CHAPTER_REGEX)[0];
 }
 
-function parseChapterTitle(titleString, chapterNum) {
+export function parseChapterTitle(titleString, chapterNum) {
     titleString = normalizeNbsp(titleString);
     titleString = titleString.split(chapterNum)[1].trim();
     return titleString;
