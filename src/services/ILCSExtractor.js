@@ -1,7 +1,7 @@
-import { TITLE, HREF, TOPIC, TOKEN, NL } from '../constants/strings.js';
+import { TITLE, HREF, TOPIC, TOKEN, NL } from './constants/strings.js';
 import { ENTIRE_ACT_LINK } from './constants/strings.js';
 
-export function getILCSIndexString(ulChildren) {
+export function getILCSIndexString(ulChildren, TITLE, HREF, TOPIC, NL) {
     let chapterIndexString  = '';
     let currentTopic = '';
     for(const ulChild of ulChildren) {
@@ -19,7 +19,7 @@ export function getILCSIndexString(ulChildren) {
     return chapterIndexString;
 }
 
-export function getILCSAct(pChildren) {
+export function getILCSAct(pChildren, TOKEN) {
     let actText = '';
 
     for (const pChild of pChildren) {
@@ -31,7 +31,7 @@ export function getILCSAct(pChildren) {
     return actText;
 }
 
-export function hasEntireAct(aNodes) {
+export function hasEntireAct(aNodes, ENTIRE_ACT_LINK) {
     let href = '';
     for (const aNode of aNodes) {
         if (aNode.innerText.toLowerCase().includes(ENTIRE_ACT_LINK)) {

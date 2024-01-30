@@ -6,9 +6,18 @@ import {
     hasEntireAct,
 } from './ILCSExtractor.js';
 
-import { UL_CHILDREN, TD_P_ANCHORS, P_CHILDREN } from './constants/strings.js';
+import {
+    UL_CHILDREN,
+    TD_P_ANCHORS,
+    P_CHILDREN,
+    TITLE,
+    HREF,
+    TOPIC,
+    TOKEN,
+    NL,
+    ENTIRE_ACT_LINK
+} from './constants/strings.js';
 
-import ILCSModelFactory from './ILCSModelFactory.js';
 import ILCSObjectFactory from './ILCSObjectFactory.js';
 
 class ILCSCrawler {
@@ -33,7 +42,7 @@ class ILCSCrawler {
 
     async getActsFromUrl(url) {
         const chapterPage = await this.gotoWithDelay(url);
-        const acts = await chapterPage.$$eval(UL_CHILDREN, getILCSIndexString);
+        const acts = await chapterPage.$$eval(UL_CHILDREN, getILCSIndexString, TITLE, HREF, TOPIC, NL);
         chapterPage.close();
         return ILCSObjectFactory.getActsArray(acts);
     }
@@ -41,15 +50,15 @@ class ILCSCrawler {
     async getSectionsFromUrl(url) {
         const actPage = await this.gotoWithDelay(url);
         let actText = '';
-        const entirePage = await actPage.$$eval(TD_P_ANCHORS, hasEntireAct);
+        const entirePage = await actPage.$$eval(TD_P_ANCHORS, hasEntireAct, ENTIRE_ACT_LINK);
         if (entirePage) {
             await actPage.goto(entirePage);
-            actText = await actPage.$$eval(P_CHILDREN, getILCSAct);
+            actText = await actPage.$$eval(P_CHILDREN, getILCSAct, TOKEN);
             actPage.close();
             return ILCSObjectFactory.getSectionsArray(actText);
         }
         else {
-            actText = await actPage.$$eval(P_CHILDREN, getILCSAct);
+            actText = await actPage.$$eval(P_CHILDREN, getILCSAct, TOKEN);
             actPage.close();
             return ILCSObjectFactory.getSectionsArray(actText);
         }
@@ -64,7 +73,7 @@ export async function initILCSCrawler() {
     const browser = await puppeteer.launch();
     const basePage = await browser.newPage();
     await basePage.goto(ILCSCrawler.BASE_URL);
-    let index = await basePage.$$eval(UL_CHILDREN, getILCSIndexString);
+    let index = await basePage.$$eval(UL_CHILDREN, getILCSIndexString, TITLE, HREF, TOPIC, NL);
     index = ILCSObjectFactory.getChaptersArray(index);
     return new ILCSCrawler(browser, index);
 }

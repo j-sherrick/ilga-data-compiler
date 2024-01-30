@@ -8,7 +8,7 @@ import connectDB from "./connectDB.js";
 //     output: process.stdout
 // });
 
-const { getChaptersArray, getTopicsArray } = ILCSModelFactory;
+const { getNewChaptersArray, getNewTopicsArray } = ILCSModelFactory;
 
 export default {
 
@@ -16,7 +16,10 @@ export default {
         // await connectDB();
 
         const crawler = await initILCSCrawler();
-        const chapters = getChaptersArray(crawler.chapters);
+        let chapters = crawler.chapters;
+        chapters = getNewChaptersArray(chapters);
+        console.log(chapters.length);
+        console.log(chapters);
         for (const chapter of chapters) {
             console.log(chapter.title);
         }
