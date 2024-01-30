@@ -3,7 +3,7 @@ import { parseChapterNumber, parseChapterTitle } from './utils/chapterUtils.js';
 import { parseSectionHeader, parseSectionSource, parseSectionText } from './utils/sectionUtils.js';
 import { NL, SP, TITLE, TOPIC, HREF, TOKEN, SERIES_NAMES, SERIES_NUMBERS } from './constants/strings.js';
 
-function getChapter(chptString) {
+function getNewChapter(chptString) {
     const chapterArray = chptString.split(NL);
     let chapter = {};
     for (const line of chapterArray) {
@@ -12,7 +12,7 @@ function getChapter(chptString) {
             chapter.title = parseChapterTitle(line, chapter.number);
         }
         else if (line.includes(TOPIC)) {
-            chapter.topic = getTopic(line);
+            chapter.topic = getNewTopic(line);
         }
         else if (line.includes(HREF)) {
             chapter.url = line.split(HREF)[1];
@@ -21,7 +21,7 @@ function getChapter(chptString) {
     return chapter;
 }
 
-function getTopic(topicString) {
+function getNewTopic(topicString) {
     let topic = {};
     for (let i = 0; i < SERIES_NAMES.length; i++) {
         if (topicString.includes(SERIES_NAMES[i])) {
@@ -32,11 +32,11 @@ function getTopic(topicString) {
     }
 }
 
-function getChaptersArray(chapterIndexString) {
+function getNewChaptersArray(chapterIndexString) {
     const chapterIndexArray = chapterIndexString.split(NL + NL);
     let chapters = [];
     for (let chapter of chapterIndexArray) {
-        chapter = getChapter(chapter);
+        chapter = getNewChapter(chapter);
         if (chapter.title) {
             chapters.push(chapter);
         }
@@ -44,7 +44,7 @@ function getChaptersArray(chapterIndexString) {
     return chapters;
 }
 
-function getAct(act) {
+function getNewAct(act) {
     act = normalizeNewlines(act);
     act = act.split(NL);
     let parsedAct = {};
@@ -68,18 +68,18 @@ function getAct(act) {
     return parsedAct;
 }
 
-function getActsArray(actIndexString) {
+function getNewActsArray(actIndexString) {
     const actIndexArray = actIndexString.split(NL + NL);
     let acts = [];
     for (let act of actIndexArray) {
         if(act){
-            acts.push(getAct(act));
+            acts.push(getNewAct(act));
         }
     }
     return acts;
 }
 
-function getSection(section) {
+function getNewSection(section) {
     section = section.split(NL).map(el => normalizeNbsp(el).trim()).filter(el => el !== '');
     const header = parseSectionHeader(section[0]);
     const source = parseSectionSource(section[section.length - 1]);
@@ -87,7 +87,7 @@ function getSection(section) {
     return { header, text, source };
 }
 
-function getSectionsArray(act) {
+function getNewSectionsArray(act) {
     const sections = act.split(TOKEN).filter( section => {
         return  section &&
                 section !== SP &&
@@ -96,7 +96,7 @@ function getSectionsArray(act) {
     }).map(section => section.trim());
     let parsedSections = [];
     for (const section of sections) {
-        let parsedSection = getSection(section);
+        let parsedSection = getNewSection(section);
         parsedSections.push(parsedSection);
     }
     return parsedSections
@@ -104,11 +104,11 @@ function getSectionsArray(act) {
 
 
 export default {
-    getChapter,
-    getTopic,
-    getChaptersArray,
-    getAct,
-    getActsArray,
-    getSection,
-    getSectionsArray,
+    getNewChapter,
+    getNewTopic,
+    getNewChaptersArray,
+    getNewAct,
+    getNewActsArray,
+    getNewSection,
+    getNewSectionsArray,
 }

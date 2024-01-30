@@ -44,7 +44,7 @@ class ILCSCrawler {
         const chapterPage = await this.gotoWithDelay(url);
         const acts = await chapterPage.$$eval(UL_CHILDREN, getILCSIndexString, TITLE, HREF, TOPIC, NL);
         chapterPage.close();
-        return ILCSObjectFactory.getActsArray(acts);
+        return ILCSObjectFactory.getNewActsArray(acts);
     }
 
     async getSectionsFromUrl(url) {
@@ -55,12 +55,12 @@ class ILCSCrawler {
             await actPage.goto(entirePage);
             actText = await actPage.$$eval(P_CHILDREN, getILCSAct, TOKEN);
             actPage.close();
-            return ILCSObjectFactory.getSectionsArray(actText);
+            return ILCSObjectFactory.getNewSectionsArray(actText);
         }
         else {
             actText = await actPage.$$eval(P_CHILDREN, getILCSAct, TOKEN);
             actPage.close();
-            return ILCSObjectFactory.getSectionsArray(actText);
+            return ILCSObjectFactory.getNewSectionsArray(actText);
         }
     }
     
@@ -74,7 +74,7 @@ export async function initILCSCrawler() {
     const basePage = await browser.newPage();
     await basePage.goto(ILCSCrawler.BASE_URL);
     let index = await basePage.$$eval(UL_CHILDREN, getILCSIndexString, TITLE, HREF, TOPIC, NL);
-    index = ILCSObjectFactory.getChaptersArray(index);
+    index = ILCSObjectFactory.getNewChaptersArray(index);
     return new ILCSCrawler(browser, index);
 }
 

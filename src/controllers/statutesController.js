@@ -16,14 +16,7 @@ export default {
         // await connectDB();
 
         const crawler = await initILCSCrawler();
-        let chapters = crawler.chapters;
-        chapters = getNewChaptersArray(chapters);
-        console.log(chapters.length);
-        console.log(chapters);
-        for (const chapter of chapters) {
-            console.log(chapter.title);
-        }
-
-        crawler.close();
+        let chapterObjects = crawler.chapters;
+        let chapterModels = getNewChaptersArray(chapterObjects);
     }
 }
