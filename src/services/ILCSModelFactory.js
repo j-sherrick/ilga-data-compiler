@@ -104,16 +104,16 @@ function getNewSubtopic(subtopic) {
     return newSubtopic;
 }
 
-function getNewSubtopicsArray(acts) {
+function getNewSubtopicsArray(actObjs, actMods) {
     let subtopics = [];
     let currentSubtopic = {};
-    for (const act of acts) {
-        if (currentSubtopic.name !== act.subtopic.name) {
-            currentSubtopic = getNewSubtopic(act.subtopic);
-            currentSubtopic.acts.push(act._id);
+    for (let i = 0; i < actObjs.length; i++) {
+        if (currentSubtopic.name !== actObjs[i].subtopic.name) {
+            currentSubtopic = getNewSubtopic(actObjs[i].subtopic);
+            currentSubtopic.acts.push(actMods[i]._id);
             subtopics.push(currentSubtopic);
         }
-        currentSubtopic.acts.push(act._id);
+        currentSubtopic.acts.push(actMods[i]._id);
     }
     return subtopics;
 }
