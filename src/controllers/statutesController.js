@@ -9,17 +9,17 @@ import connectDB from "./connectDB.js";
 // });
 
 const { getNewChaptersArray, getNewTopicsArray } = ILCSModelFactory;
+const crawler = await initILCSCrawler();
+
+async function initILCSCollection() {
+    // await connectDB();
+
+    let chapterObjects = crawler.chapters;
+    let chapters = getNewChaptersArray(chapterObjects);
+    let topics = getNewTopicsArray(chapterObjects, chapters);
+}
 
 export default {
 
-    async initILCSCollection() {
-        // await connectDB();
 
-        const crawler = await initILCSCrawler();
-        let chapterObjects = crawler.chapters;
-        let chapters = getNewChaptersArray(chapterObjects);
-        let topics = getNewTopicsArray(chapterObjects, chapters);
-
-        crawler.close();
-    }
 }
