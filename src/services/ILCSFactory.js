@@ -1,4 +1,4 @@
-// Description: This file contains functions for parsing the chapter and act
+// Desc: Factory for parsing Strings to POJOs, and creating ILCS related database models
 import {
     Section,
     Act,
@@ -6,8 +6,6 @@ import {
     Topic,
     Subtopic
 } from '../models/StatuteSchemas.js';
-
-import { get } from "mongoose";
 
 // keywords returned by the extractors
 const TITLE = 'title';
@@ -46,172 +44,8 @@ const SERIES_NAMES = [
         'BUSINESS AND EMPLOYMENT'
     ];
 
-// UTILITIES
-function normalizeNbsp(line) {
-    return line.replace(NBSP_REGEX, SP);
-}
-
-function normalizeNewlines(section) {
-    let temp = section.replace(NL_REGEX, NL);
-    return temp;
-}
-
-function removeNewlines(section) {
-    return section.replace(NL_REGEX, ' ');
-}
-
-// CHAPTER PARSING
-function parseChapterNumber(chapter) {
-    return chapter.match(CHAPTER_REGEX)[0];
-}
-
-function parseChapterTitle(chapter, chptNumber) {
-    chapter = normalizeNbsp(chapter);
-    chapter = chapter.split(chptNumber)[1].trim();
-    return chapter;
-}
-
-function parseChapterTopic(topicString) {
-    let topic = {};
-    for (let i = 0; i < SERIES_NAMES.length; i++) {
-        if (topicString.includes(SERIES_NAMES[i])) {
-            topic.series = SERIES_NUMBERS[i];
-            topic.name = SERIES_NAMES[i];
-            return topic;
-        }
-    }
-}
-
-function parseChapter(chptString) {
-    const chapterArray = chptString.split(NL);
-    let chapter = {};
-    for (const line of chapterArray) {
-        if (line.includes(TITLE)) {
-            chapter.number = parseChapterNumber(line);
-            chapter.title = parseChapterTitle(line, chapter.number);
-        }
-        else if (line.includes(TOPIC)) {
-            chapter.topic = parseChapterTopic(line);
-        }
-        else if (line.includes(HREF)) {
-            chapter.url = line.split('url:')[1];
-        }
-    }
-    return chapter;
-}
-
-function parseChaptersArray(chapterIndexString) {
-    const chapterIndexArray = chapterIndexString.split(NL + NL);
-    let chapters = [];
-    for (let chapter of chapterIndexArray) {
-        chapter = parseChapter(chapter);
-        if (chapter.title) {
-            chapters.push(chapter);
-        }
-    }
-    return chapters;
-}
-
-// ACT PARSING
-function parseActPrefix(line) {
-    let prefix = normalizeNbsp(line.split('/')[0]);
-    return prefix.split(' ')[2];
-}
-
-function parseActTitle(act) {
-    return normalizeNbsp(act.split('/')[1].trim());
-}
-
-function parseActSubtopic(subtopic) {
-    return normalizeNbsp(subtopic.split('topic:')[1].trim());
-}
-
-function parseActDetails(act) {
-    act = normalizeNewlines(act);
-    act = act.split(NL);
-    let parsedAct = {};
-    for (const line of act) {
-        if (line.includes(TITLE)) {
-            parsedAct.prefix = parseActPrefix(line);
-            parsedAct.title = parseActTitle(line);
-        }
-        else if (line.includes(HREF)) {
-            parsedAct.url = line.split('url:')[1];
-        }
-        else if (line.includes(TOPIC)) {
-            let subtopic = parseActSubtopic(line);
-            if (subtopic) {
-                parsedAct.subtopic = {
-                    name: subtopic
-               };
-            }
-        }
-    }
-    return parsedAct;
-}
-
-function parseActsArray(actIndexString) {
-    const actIndexArray = actIndexString.split(NL + NL);
-    let acts = [];
-    for (let act of actIndexArray) {
-        if(act){
-            acts.push(parseActDetails(act));
-        }
-    }
-    return acts;
-}
-
-
-// ACT TEXT PARSING
-function parseSectionHeader(header) {
-    header = normalizeNbsp(header);
-    let [number, reference] = header.split(') (');
-    let parsedHeader = {};
-    if(reference) {
-        parsedHeader.reference = reference.slice(0, -1);
-        parsedHeader.number = number.split('/')[1];
-    }
-    else {
-        parsedHeader.number = number.split('/')[1].slice(0, -1);
-    }
-    return parsedHeader;
-}
-
-function parseSectionSource(source) {
-    return normalizeNbsp(source.match(SOURCE_REGEX)[1]).trim();
-}
-
-function parseSectionText(section) {
-    let text = section.slice(1, -1).join(' ');
-    return text;
-}
-
-function parseSection(section) {
-    section = section.split(NL).map(el => normalizeNbsp(el).trim()).filter(el => el !== '');
-    const header = parseSectionHeader(section[0]);
-    const source = parseSectionSource(section[section.length - 1]);
-    const text = parseSectionText(section);
-    return { header, text, source };
-}
-
-function parseActText(act) {
-    const sections = act.split('<TABLE_END>').filter( section => {
-        return  section &&
-                section !== ' ' &&
-                section !== '\n' &&
-                section !== '\n\n';
-    }).map(section => section.trim());
-    let parsedSections = [];
-    for (const section of sections) {
-        let parsedSection = parseSection(section);
-        parsedSections.push(parsedSection);
-    }
-    return parsedSections
-}
-
-
 // MODEL PARSING
-function getSection(section, actId) {
+function getNewSection(section, actId) {
     const newSection = new Section({
         header: {
             number: section.header.number,
@@ -224,15 +58,15 @@ function getSection(section, actId) {
     return newSection;
 }
 
-function getSectionsArray(sections, actId) {
+function getNewSectionsArray(sections, actId) {
     let sectionsArray = [];
     for (const section of sections) {
-        sectionsArray.push(getSection(section, actId));
+        sectionsArray.push(getNewSection(section, actId));
     }
     return sectionsArray;
 }
 
-function getAct(act, chapterId) {
+function getNewAct(act, chapterId) {
     const newAct = new Act({
         prefix: act.prefix,
         title: act.title,
@@ -242,18 +76,18 @@ function getAct(act, chapterId) {
     });
 }
 
-function getActsArray(acts, chapterId) {
+function getNewActsArray(acts, chapterId) {
     let actsArray = [];
     let currentAct = {};
 
     for (const act of acts) {
-        currentAct = getAct(act, chapterId);
+        currentAct = getNewAct(act, chapterId);
         actsArray.push(currentAct);
     }
     return actsArray;
 }
 
-function getChapter(chapter) {
+function getNewChapter(chapter) {
     const newChapter = new Chapter({
         number: chapter.number,
         url: chapter.url,
@@ -264,17 +98,17 @@ function getChapter(chapter) {
     return newChapter;
 }
 
-function getChaptersArray(chapters) {
+function getNewChaptersArray(chapters) {
     let chaptersArray = [];
     let currentChapter = {};
     for (const chapter of chapters) {
-        currentChapter = getChapter(chapter);
+        currentChapter = getNewChapter(chapter);
         chaptersArray.push(currentChapter);
     }
     return chaptersArray;
 }
 
-function getTopic(topic) {
+function getNewTopic(topic) {
     const newTopic = new Topic({
         series: topic.series,
         name: topic.name,
@@ -283,12 +117,12 @@ function getTopic(topic) {
     return newTopic;
 }
 
-function getTopicsArray(chapters) {
+function getNewTopicsArray(chapters) {
     let topics = [];
     let currentTopic = {};
     for (const chapter of chapters) {
         if (currentTopic.name !== chapter.topic.name) {
-            currentTopic = getTopic(chapter.topic);
+            currentTopic = getNewTopic(chapter.topic);
             currentTopic.chapters.push(chapter._id);
             topics.push(currentTopic);
         }
@@ -298,7 +132,7 @@ function getTopicsArray(chapters) {
     return topics;
 }
 
-function getSubtopic(subtopic) {
+function getNewSubtopic(subtopic) {
     const newSubtopic = new Subtopic({
         name: subtopic.name,
         acts: []
@@ -306,12 +140,12 @@ function getSubtopic(subtopic) {
     return newSubtopic;
 }
 
-function getSubtopicsArray(acts) {
+function getNewSubtopicsArray(acts) {
     let subtopics = [];
     let currentSubtopic = {};
     for (const act of acts) {
         if (currentSubtopic.name !== act.subtopic.name) {
-            currentSubtopic = getSubtopic(act.subtopic);
+            currentSubtopic = getNewSubtopic(act.subtopic);
             currentSubtopic.acts.push(act._id);
             subtopics.push(currentSubtopic);
         }
@@ -321,30 +155,41 @@ function getSubtopicsArray(acts) {
 }
 
 function initILCS(chapters, topics) {
-    let chapterModels = getChaptersArray(chapters);
-    topics = getTopicsArray(chapterModels);
+    let chapterModels = getNewChaptersArray(chapters);
+    topics = getNewTopicsArray(chapterModels);
 }
 
 export default {
 
     objectFactory() {
         return {
+            parseChapter,
             parseChaptersArray,
+
+            parseAct,
             parseActsArray,
-            parseActText
+
+            parseSection,
+            parseSectionsArray,
         }
     },
     
     modelFactory() {
         return {
-            getSectionsArray,
-            getActsArray,
-            getChapter,
-            getChaptersArray,
-            getTopic,
-            getTopicsArray,
-            getSubtopic,
-            getSubtopicsArray
+            getChapter: getNewChapter,
+            getChaptersArray: getNewChaptersArray,
+
+            getTopic: getNewTopic,
+            getTopicsArray: getNewTopicsArray,
+
+            getAct: getNewAct,
+            getActsArray: getNewActsArray,
+
+            getSubtopic: getNewSubtopic,
+            getSubtopicsArray: getNewSubtopicsArray,
+
+            getSection: getNewSection,
+            getSectionsArray: getNewSectionsArray
         }
     }
 };
