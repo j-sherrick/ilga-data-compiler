@@ -80,17 +80,18 @@ function getNewTopic(topic) {
     return newTopic;
 }
 
-function getNewTopicsArray(chapters) {
+function getNewTopicsArray(chapterObjs, chapterMods) {
     let topics = [];
     let currentTopic = {};
-    for (const chapter of chapters) {
-        if (currentTopic.name !== chapter.topic.name) {
-            currentTopic = getNewTopic(chapter.topic);
-            currentTopic.chapters.push(chapter._id);
+    for (let i = 0; i < chapterObjs.length; i++) {
+        if (currentTopic.name !== chapterObjs[i].topic.name) {
+            currentTopic = getNewTopic(chapterObjs[i].topic);
+            currentTopic.chapters.push(chapterMods[i]._id);
             topics.push(currentTopic);
         }
-        currentTopic.chapters.push(chapter._id);
-        chapter.topic = currentTopic._id;
+        else {
+            currentTopic.chapters.push(chapterMods[i]._id);
+        }
     }
     return topics;
 }
@@ -116,6 +117,7 @@ function getNewSubtopicsArray(acts) {
     }
     return subtopics;
 }
+
 
 export default {
     getNewChapter,

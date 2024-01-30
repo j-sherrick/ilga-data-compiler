@@ -17,6 +17,9 @@ export default {
 
         const crawler = await initILCSCrawler();
         let chapterObjects = crawler.chapters;
-        let chapterModels = getNewChaptersArray(chapterObjects);
+        let chapters = getNewChaptersArray(chapterObjects);
+        let topics = getNewTopicsArray(chapterObjects, chapters);
+
+        crawler.close();
     }
 }
