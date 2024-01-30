@@ -1,8 +1,9 @@
 import { normalizeNewlines, normalizeNbsp } from './stringUtils.js';
+import { NL, TITLE, TOPIC, HREF, SP } from '../constants/strings.js';
 
 function parseActPrefix(line) {
     let prefix = normalizeNbsp(line.split('/')[0]);
-    return prefix.split(' ')[2];
+    return prefix.split(SP)[2];
 }
 
 function parseActTitle(act) {
@@ -10,10 +11,10 @@ function parseActTitle(act) {
 }
 
 function parseActSubtopic(subtopic) {
-    return normalizeNbsp(subtopic.split('topic:')[1].trim());
+    return normalizeNbsp(subtopic.split(TOPIC)[1].trim());
 }
 
-export function parseAct(act) {
+export function getAct(act) {
     act = normalizeNewlines(act);
     act = act.split(NL);
     let parsedAct = {};
@@ -23,7 +24,7 @@ export function parseAct(act) {
             parsedAct.title = parseActTitle(line);
         }
         else if (line.includes(HREF)) {
-            parsedAct.url = line.split('url:')[1];
+            parsedAct.url = line.split(HREF)[1];
         }
         else if (line.includes(TOPIC)) {
             let subtopic = parseActSubtopic(line);
@@ -37,12 +38,12 @@ export function parseAct(act) {
     return parsedAct;
 }
 
-export function parseActsArray(actIndexString) {
+export function getActsArray(actIndexString) {
     const actIndexArray = actIndexString.split(NL + NL);
     let acts = [];
     for (let act of actIndexArray) {
         if(act){
-            acts.push(parseAct(act));
+            acts.push(getAct(act));
         }
     }
     return acts;

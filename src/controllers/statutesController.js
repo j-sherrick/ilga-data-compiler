@@ -1,5 +1,5 @@
 import { initILCSCrawler } from "../services/ILCSCrawler.js";
-import ILCSFactory from "../services/ILCSFactory.js";
+import ILCSModelFactory from "../services/ILCSModelFactory.js";
 import readline from "readline";
 import connectDB from "./connectDB.js";
 
@@ -8,7 +8,7 @@ import connectDB from "./connectDB.js";
 //     output: process.stdout
 // });
 
-const { getChaptersArray, getTopicsArray } = ILCSFactory.modelFactory();
+const { getChaptersArray, getTopicsArray } = ILCSModelFactory;
 
 export default {
 
@@ -16,7 +16,10 @@ export default {
         // await connectDB();
 
         const crawler = await initILCSCrawler();
-        let chapters  = getChaptersArray(crawler.chapters);
+        const chapters = getChaptersArray(crawler.chapters);
+        for (const chapter of chapters) {
+            console.log(chapter.title);
+        }
 
         crawler.close();
     }

@@ -1,9 +1,5 @@
-import { get } from "mongoose";
-
-export const UL_CHILDREN = 'td ul > *';
-export const P_CHILDREN = 'td p > *'
-export const TD_P_ANCHORS = 'td p a';
-
+import { TITLE, HREF, TOPIC, TOKEN, NL } from '../constants/strings.js';
+import { ENTIRE_ACT_LINK } from './constants/strings.js';
 
 export function getILCSIndexString(ulChildren) {
     let chapterIndexString  = '';
@@ -14,9 +10,9 @@ export function getILCSIndexString(ulChildren) {
             currentTopic = ulChild.innerText.trim();
         }
         else if (ulChild.tagName === 'LI' && ulChild.innerText !== '') {
-            chapterIndexString += 'title:' + ulChild.innerText.trim() + '\n';
-            chapterIndexString += 'topic:' + currentTopic + '\n';
-            chapterIndexString += 'url:' + ulChild.querySelector('a').href + '\n\n';
+            chapterIndexString += TITLE + ulChild.innerText.trim() + NL;
+            chapterIndexString += TOPIC + currentTopic + NL;
+            chapterIndexString += HREF + ulChild.querySelector('a').href + NL + NL;
         }
     }
 
@@ -28,7 +24,7 @@ export function getILCSAct(pChildren) {
 
     for (const pChild of pChildren) {
         if (pChild.tagName === 'TABLE') {
-            actText += pChild.innerText + '<TABLE_END>';
+            actText += pChild.innerText + TOKEN;
         }
     }
 
@@ -38,7 +34,7 @@ export function getILCSAct(pChildren) {
 export function hasEntireAct(aNodes) {
     let href = '';
     for (const aNode of aNodes) {
-        if (aNode.innerText.toLowerCase().includes('entire act')) {
+        if (aNode.innerText.toLowerCase().includes(ENTIRE_ACT_LINK)) {
             href = aNode.href;
             break;
         }

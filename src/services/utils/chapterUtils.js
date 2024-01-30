@@ -1,5 +1,7 @@
 import { normalizeNbsp } from './stringUtils.js';
 
+import { NL, TITLE, TOPIC, HREF, SERIES_NAMES, SERIES_NUMBERS } from '../constants/strings.js';
+
 function parseChapterNumber(titleString) {
     return titleString.match(CHAPTER_REGEX)[0];
 }
@@ -10,7 +12,7 @@ function parseChapterTitle(titleString, chapterNum) {
     return titleString;
 }
 
-function parseChapterTopic(topicString) {
+export function getTopic(topicString) {
     let topic = {};
     for (let i = 0; i < SERIES_NAMES.length; i++) {
         if (topicString.includes(SERIES_NAMES[i])) {
@@ -21,7 +23,7 @@ function parseChapterTopic(topicString) {
     }
 }
 
-export function parseChapter(chptString) {
+export function getChapter(chptString) {
     const chapterArray = chptString.split(NL);
     let chapter = {};
     for (const line of chapterArray) {
@@ -30,7 +32,7 @@ export function parseChapter(chptString) {
             chapter.title = parseChapterTitle(line, chapter.number);
         }
         else if (line.includes(TOPIC)) {
-            chapter.topic = parseChapterTopic(line);
+            chapter.topic = getTopic(line);
         }
         else if (line.includes(HREF)) {
             chapter.url = line.split('url:')[1];
@@ -39,11 +41,11 @@ export function parseChapter(chptString) {
     return chapter;
 }
 
-export function parseChaptersArray(chapterIndexString) {
+export function getChaptersArray(chapterIndexString) {
     const chapterIndexArray = chapterIndexString.split(NL + NL);
     let chapters = [];
     for (let chapter of chapterIndexArray) {
-        chapter = parseChapter(chapter);
+        chapter = getChapter(chapter);
         if (chapter.title) {
             chapters.push(chapter);
         }

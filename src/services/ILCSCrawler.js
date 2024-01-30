@@ -4,18 +4,12 @@ import {
     getILCSIndexString,
     getILCSAct,
     hasEntireAct,
-    P_CHILDREN,
-    UL_CHILDREN,
-    TD_P_ANCHORS
 } from './ILCSExtractor.js';
 
-import ILCSFactory from './ILCSFactory.js';
+import { UL_CHILDREN, TD_P_ANCHORS, P_CHILDREN } from './constants/strings.js';
 
-const { 
-    parseActText,
-    parseActsArray,
-    parseChaptersArray
-} = ILCSFactory.objectFactory();
+import ILCSModelFactory from './ILCSModelFactory.js';
+import ILCSObjectFactory from './ILCSObjectFactory.js';
 
 class ILCSCrawler {
     static BASE_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs.asp';
@@ -41,7 +35,7 @@ class ILCSCrawler {
         const chapterPage = await this.gotoWithDelay(url);
         const acts = await chapterPage.$$eval(UL_CHILDREN, getILCSIndexString);
         chapterPage.close();
-        return parseActsArray(acts);
+        return ILCSObjectFactory.getActsArray(acts);
     }
 
     async getSectionsFromUrl(url) {
@@ -52,12 +46,12 @@ class ILCSCrawler {
             await actPage.goto(entirePage);
             actText = await actPage.$$eval(P_CHILDREN, getILCSAct);
             actPage.close();
-            return parseActText(actText);
+            return ILCSObjectFactory.getSectionsArray(actText);
         }
         else {
             actText = await actPage.$$eval(P_CHILDREN, getILCSAct);
             actPage.close();
-            return parseActText(actText);
+            return ILCSObjectFactory.getSectionsArray(actText);
         }
     }
     
@@ -71,7 +65,7 @@ export async function initILCSCrawler() {
     const basePage = await browser.newPage();
     await basePage.goto(ILCSCrawler.BASE_URL);
     let index = await basePage.$$eval(UL_CHILDREN, getILCSIndexString);
-    index = parseChaptersArray(index);
+    index = ILCSObjectFactory.getChaptersArray(index);
     return new ILCSCrawler(browser, index);
 }
 
