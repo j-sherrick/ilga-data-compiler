@@ -1,3 +1,39 @@
+/**
+ * @module ILCSCrawler
+ * 
+ * @description This module exports the `ILCSCrawler` class, which is used to crawl the Illinois General Assembly's website for the Illinois Compiled Statutes (ILCS).
+ * The `ILCSCrawler` uses Puppeteer to navigate the website and extract data from it.
+ * 
+ * The `ILCSCrawler` class has the following properties:
+ * - `_browser`: A Puppeteer browser instance used to navigate the website.
+ * - `_index`: An array of chapter titles to crawl.
+ * 
+ * The `ILCSCrawler` class has the following methods:
+ * - `get chapters()`: A getter method that returns the `_index` property.
+ * - `getActsFromUrl(url)`: A method that navigates to a given URL and extracts the acts from the page.
+ * 
+ * @example
+ * import puppeteer from 'puppeteer';
+ * import ILCSCrawler from './ILCSCrawler.js';
+ * 
+ * async function main() {
+ *     const browser = await puppeteer.launch();
+ *     const index = ['Chapter 1', 'Chapter 2', 'Chapter 3']; // Replace with your actual index
+ * 
+ *     const crawler = new ILCSCrawler(browser, index);
+ * 
+ *     for (const chapter of crawler.chapters) {
+ *         console.log(`Crawling ${chapter}...`);
+ *         const acts = await crawler.getActsFromUrl(`${ILCSCrawler.BASE_URL}/${chapter}`);
+ *         console.log(acts);
+ *     }
+ * 
+ *     await browser.close();
+ * }
+ * 
+ * main().catch(console.error);
+ */
+
 import puppeteer, { ElementHandle, Page } from 'puppeteer';
 
 import {
