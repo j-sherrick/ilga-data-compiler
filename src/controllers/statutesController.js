@@ -12,7 +12,7 @@ import { get } from "http";
 const { getNewChaptersArray, getNewTopicsArray, getNewActsArray } = ILCSModelFactory;
 const crawler = await initILCSCrawler();
 
-export async function initILCSCollection() {
+async function initILCSCollection() {
     // await connectDB();
 
     let chapterObjects = crawler.chapters;
@@ -21,19 +21,26 @@ export async function initILCSCollection() {
     return { chapters, topics };
 }
 
-export async function initActs(chapter) {
+async function initActs(chapter) {
     let actObjects = await crawler.getActsFromUrl(chapter.url);
     let acts = getNewActsArray(actObjects, chapter._id);
     let subtopics = getNewSubtopicsArray(actObjects, acts);
     return { acts, subtopics };
 }
 
-export async function initSections(act) {
+async function initSections(act) {
     let sectionObjects = await crawler.getSectionsFromUrl(act.url);
     let sections = getNewSectionsArray(sectionObjects, act._id);
     return sections;
 }
 
 export async function test() {
-    
+
+}
+
+export default {
+    initILCSCollection,
+    initActs,
+    initSections,
+    test
 }
