@@ -1,7 +1,7 @@
 /**
  * @module ILCSObjectFactory
  * 
- * @description This module exports functions that transform the raw strings returned by the `ILCSExtractor` class, into plain JavaScript objects.
+ * @description This module exports functions that transform strings returned by the {@link ILCSExtractor}, into plain JavaScript objects.
  * These objects represent the Illinois Compiled Statutes' (ILCS) numbering scheme broken down into components such as Chapters, Acts, and Topics, and can be used for building their corresponding Mongoose models.
  * Each function takes in a raw string and returns a new object with parsed data.
  * 
@@ -30,7 +30,18 @@ import { parseSectionHeader, parseSectionSource, parseSectionText } from './util
 import { NL, SP, TITLE, TOPIC, HREF, TOKEN, SERIES_NAMES, SERIES_NUMBERS } from './constants/strings.js';
 
 
-
+/**
+ * Gets a new chapter object from a raw string.
+ * 
+ * @param { String } chptString - The raw string to parse.
+ * @returns { Object } 
+ *{
+ *   number: String,
+ *   title: String,
+ *   topic: Object,
+ *   url: String
+ *}
+ */
 function getNewChapter(chptString) {
     const chapterArray = chptString.split(NL);
     let chapter = {};
