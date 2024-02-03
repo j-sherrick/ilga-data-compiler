@@ -31,16 +31,16 @@ import { NL, SP, TITLE, TOPIC, HREF, TOKEN, SERIES_NAMES, SERIES_NUMBERS } from 
 
 
 /**
- * Gets a new chapter object from a raw string.
+ * Gets a new chapter object from the raw string returned by the ILCSExtractor.
  * 
  * @param { String } chptString - The raw string to parse.
- * @returns { Object } 
- *{
- *   number: String,
- *   title: String,
- *   topic: Object,
- *   url: String
- *}
+ * @returns { Object } chapter - The parsed chapter object.
+ * @property { String } chapter.number - String representation of the chapter's number.
+ * @property { String } chapter.title - The chapter's title.
+ * @property { Object } chapter.topic - The chapter's topic.
+ * @property { String } chapter.topic.series - The chapter's topic series number.
+ * @property { String } chapter.topic.name - The chapter's topic name.
+ * @property { String } chapter.url - The chapter's url.
  */
 function getNewChapter(chptString) {
     const chapterArray = chptString.split(NL);
