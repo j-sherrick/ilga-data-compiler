@@ -2,6 +2,7 @@ import { initILCSCrawler } from "../services/ILCSCrawler.js";
 import ILCSModelFactory from "../services/ILCSModelFactory.js";
 import readline from "readline";
 import connectDB from "./connectDB.js";
+import { get } from "http";
 
 // const rl = readline.createInterface({
 //     input: process.stdin,
@@ -23,9 +24,16 @@ export async function initILCSCollection() {
 export async function initActs(chapter) {
     let actObjects = await crawler.getActsFromUrl(chapter.url);
     let acts = getNewActsArray(actObjects, chapter._id);
+    let subtopics = getNewSubtopicsArray(actObjects, acts);
+    return { acts, subtopics };
 }
 
-export default {
+export async function initSections(act) {
+    let sectionObjects = await crawler.getSectionsFromUrl(act.url);
+    let sections = getNewSectionsArray(sectionObjects, act._id);
+    return sections;
+}
 
-
+export async function test() {
+    
 }

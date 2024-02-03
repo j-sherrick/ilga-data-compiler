@@ -127,7 +127,9 @@ function getNewSubtopicsArray(actObjs, actMods) {
             currentSubtopic.acts.push(actMods[i]._id);
             subtopics.push(currentSubtopic);
         }
-        currentSubtopic.acts.push(actMods[i]._id);
+        else {
+            currentSubtopic.acts.push(actMods[i]._id);
+        }
     }
     return subtopics;
 }
