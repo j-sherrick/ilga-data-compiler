@@ -34,13 +34,13 @@ async function initSections(act) {
     return sections;
 }
 
-export async function test() {
-
+export async function close() {
+    await crawler.close();
 }
 
 export default {
     initILCSCollection,
     initActs,
     initSections,
-    test
+    close
 }
