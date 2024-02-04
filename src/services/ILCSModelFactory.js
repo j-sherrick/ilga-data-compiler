@@ -51,6 +51,7 @@ function getNewAct(act, chapterId) {
         chapter: chapterId,
         sections: [],
     });
+    return newAct;
 }
 
 function getNewActsArray(acts, chapterId) {

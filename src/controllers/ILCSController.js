@@ -2,14 +2,13 @@ import { initILCSCrawler } from "../services/ILCSCrawler.js";
 import ILCSModelFactory from "../services/ILCSModelFactory.js";
 import readline from "readline";
 import connectDB from "./connectDB.js";
-import { get } from "http";
 
 // const rl = readline.createInterface({
 //     input: process.stdin,
 //     output: process.stdout
 // });
 
-const { getNewChaptersArray, getNewTopicsArray, getNewActsArray } = ILCSModelFactory;
+const { getNewChaptersArray, getNewTopicsArray, getNewActsArray, getNewSubtopicsArray } = ILCSModelFactory;
 const crawler = await initILCSCrawler();
 
 async function initILCSCollection() {
@@ -24,8 +23,11 @@ async function initILCSCollection() {
 async function initActs(chapter) {
     let actObjects = await crawler.getActsFromUrl(chapter.url);
     let acts = getNewActsArray(actObjects, chapter._id);
-    let subtopics = getNewSubtopicsArray(actObjects, acts);
-    return { acts, subtopics };
+    if (actObjects.subtopic) {
+        let subtopics = getNewSubtopicsArray(actObjects, acts);
+        return { acts, subtopics };
+    }
+    return { acts };
 }
 
 async function initSections(act) {

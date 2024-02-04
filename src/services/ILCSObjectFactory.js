@@ -27,6 +27,7 @@
 import { parseActPrefix, parseActSubtopic, parseActTitle } from './utils/actUtils.js';
 import { parseChapterNumber, parseChapterTitle } from './utils/chapterUtils.js';
 import { parseSectionHeader, parseSectionSource, parseSectionText } from './utils/sectionUtils.js';
+import { normalizeNewlines, normalizeNbsp } from './utils/stringUtils.js';
 import { NL, SP, TITLE, TOPIC, HREF, TOKEN, SERIES_NAMES, SERIES_NUMBERS } from './constants/strings.js';
 
 
@@ -34,6 +35,7 @@ import { NL, SP, TITLE, TOPIC, HREF, TOKEN, SERIES_NAMES, SERIES_NUMBERS } from 
  * Gets a new chapter object from the raw string returned by the ILCSExtractor.
  * 
  * @param { String } chptString - The raw string to parse.
+ * 
  * @returns { Object } chapter - The parsed chapter object.
  * @property { String } chapter.number - String representation of the chapter's number.
  * @property { String } chapter.title - The chapter's title.

@@ -7,8 +7,11 @@ const { initILCSCollection, initActs, initSections, close } = controller;
 
 async function main() {
     const { chapters, topics } = await initILCSCollection();
-    console.log(chapters);
-    console.log(topics);
+    let GeneralProvisions = chapters[0];
+    let { acts, subtopics } = await initActs(GeneralProvisions);
+    // console.log(acts);
+    console.log(subtopics);
+    close();
 }
 
 await main();
