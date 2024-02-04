@@ -9,7 +9,10 @@ const ActSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Chapter'
     },
-    sections: [SectionSchema],
+    sections: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Section'
+    }],
     subtopic: {
         type: Schema.Types.ObjectId,
         ref: 'Subtopic'

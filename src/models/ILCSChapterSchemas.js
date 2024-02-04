@@ -23,3 +23,8 @@ const TopicSchema = new Schema({
         ref: 'Chapter'
     }]
 });
+
+const Chapter = mongoose.model('Chapter', ChapterSchema);
+const Topic = mongoose.model('Topic', TopicSchema);
+
+export { Chapter, Topic };
