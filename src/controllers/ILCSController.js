@@ -23,7 +23,7 @@ async function initILCSCollection() {
 async function initActs(chapter) {
     let actObjects = await crawler.getActsFromUrl(chapter.url);
     let acts = getNewActsArray(actObjects, chapter._id);
-    if (actObjects.subtopic) {
+    if (actObjects[0].subtopic) {
         let subtopics = getNewSubtopicsArray(actObjects, acts);
         return { acts, subtopics };
     }

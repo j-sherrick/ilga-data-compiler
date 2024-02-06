@@ -21,7 +21,6 @@
 import { Section, Act, Subtopic } from '../models/ILCSActSchemas.js';
 import { Chapter, Topic } from '../models/ILCSChapterSchemas.js';
 
-// MODEL PARSING
 function getNewSection(section, actId) {
     const newSection = new Section({
         header: {
