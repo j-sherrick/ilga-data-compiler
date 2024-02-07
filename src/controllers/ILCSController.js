@@ -1,5 +1,6 @@
 import { initILCSCrawler } from "../services/ILCSCrawler.js";
-import { Chapter, Topic, Act, Subtopic, Section } from "../models/Chapter.js";
+import { Chapter, Topic } from "../models/ILCSChapterSchemas.js";
+import { Act, Subtopic, Section } from "../models/ILCSActSchemas.js";
 import ILCSModelFactory from "../services/ILCSModelFactory.js";
 import mongoose from "mongoose";
 import readline from "readline";
@@ -20,17 +21,23 @@ const ilcsCollection = connectDB();
  * 
  * @param { Chapter[] } chapters the array of Chapters initialized by {@link initILCSCollection}
  * @param { Topic[] } topics the array of Topics initialized by {@link initILCSCollection}
+ * @param { boolean } resetChapters if true, the Chapter collection will be reset before saving
+ * @param { boolean } resetTopics if true, the Topic collection will be reset before saving
  * @returns { boolean } true if the top level index of the ILCS has been saved to the database, false otherwise
  */
-async function saveILCSTopLevelIndex(chapters, topics) {
+async function saveILCSTopLevelIndex(chapters, topics, resetChapters = false, resetTopics = false) {
     console.log(`${chapters.length} chapters and ${topics.length} topics have been initialized.`);
     let save = await rl.question("Do you want to save the top level index of the ILCS to the database? (yes/no) ");
     save = save.trim().toLowerCase();
     save = (save === "yes" || save === 'y') ? true : false;
     if (save) {
         try {
+            if(resetChapters) Chapter.deleteMany({}, err => console.error(err));
             let chaptersResult = await Chapter.insertMany(chapters, { rawResult: true });
+
+            if (resetTopics) Topic.deleteMany({}, err => console.error(err));
             let topicsResult = await Topic.insertMany(topics, { rawResult: true });
+
             console.log(`Inserted ${chaptersResult.insertedCount} chapters and ${topicsResult.insertedCount} topics into the database.`);
         } catch (error) {
             if (error instanceof mongoose.Error) {
@@ -43,7 +50,7 @@ async function saveILCSTopLevelIndex(chapters, topics) {
         }
     }
     else {
-        console.log("The top level index of the ILCS has not been saved to the database.");
+        console.log("Controller did not perform save operation.");
         save = false;
     }
     return save;
@@ -56,13 +63,15 @@ async function saveILCSTopLevelIndex(chapters, topics) {
  * @param {Act[]} acts the array of Acts initialized by {@link initActs}
  * @returns { boolean } true if the acts have been saved to the database, false otherwise
  */
-async function saveILCSActs(acts) {
+async function saveILCSActs(acts, resetCollection = false) {
     console.log(`This chapter has ${acts.length} acts.`);
     let save = await rl.question("Do you wish to save all acts to the database? (yes/no) ");
     save = save.trim().toLowerCase();
     save = (save === "yes" || save === 'y') ? true : false;
     if (save) {
         try {
+            if(resetCollection) Act.deleteMany({}, err => console.error(err));
+
             let actsResult = await Act.insertMany(acts, { rawResult: true });
             console.log(`Inserted ${actsResult.insertedCount} acts into the database.`);
         } catch (error) {
@@ -87,13 +96,16 @@ async function saveILCSActs(acts) {
  * @param {Subtopic[]} subtopics the array of Subtopics initialized by {@link initActs}
  * @returns { boolean } true if the subtopics have been saved to the database, false otherwise
  */
-async function saveILCSSubtopics(subtopics) {
+async function saveILCSSubtopics(subtopics, resetCollection = false) {
     console.log(`This act has ${subtopics.length} subtopics.`);
     let save = await rl.question("Do you wish to save all subtopics to the database? (yes/no) ");
     save = save.trim().toLowerCase();
     save = (save === "yes" || save === 'y') ? true : false;
     if (save) {
         try {
+            if(resetCollection) {
+                Subtopic.deleteMany({}, err => console.error(err));
+            }
             let subtopicsResult = await Subtopic.insertMany(subtopics, { rawResult: true });
             console.log(`Inserted ${subtopicsResult.insertedCount} subtopics into the database.`);
         } catch (error) {
@@ -122,10 +134,10 @@ async function saveILCSSubtopics(subtopics) {
  * @returns { boolean } true if the sections have been saved to the database, false otherwise
  */
 async function saveILCSActText(sections) {
-    console.log(`This act has ${sections.length} sections of text.`);
-    let save = await rl.question("Do wish to save all sections to the databese? (yes/no) ");
-    save = save.trim().toLowerCase();
-    save = (save === "yes" || save === 'y') ? true : false;
+    // console.log(`This act has ${sections.length} sections of text.`);
+    let save = true;
+    // save = save.trim().toLowerCase();
+    // save = (save === "yes" || save === 'y') ? true : false;
     if (save) {
         try {
             let sectionsResult = await Section.insertMany(sections, { rawResult: true });
