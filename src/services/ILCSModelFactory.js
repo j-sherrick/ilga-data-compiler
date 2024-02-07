@@ -8,16 +8,8 @@
  * The exported functions include:
  * - `getNewSection(section, actId)`: Creates a new Section model from raw section data and an Act ID.
  * - `getNewSectionsArray(sections, actId)`: Creates an array of new Section models from raw sections data and an Act ID.
- * 
- * @example
- * import { getNewSection, getNewSectionsArray } from './ILCSModelFactory.js';
- * 
- * let sectionData = { header: { number: '1', reference: 'Section 1' }, text: 'This is the text of Section 1.', source: 'Source' };
- * let actId = '1234567890abcdef';
- * 
- * let section = getNewSection(sectionData, actId);
- * let sections = getNewSectionsArray([sectionData], actId);
  */
+
 import { Section, Act, Subtopic } from '../models/ILCSActSchemas.js';
 import { Chapter, Topic } from '../models/ILCSChapterSchemas.js';
 

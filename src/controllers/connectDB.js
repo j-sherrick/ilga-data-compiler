@@ -12,6 +12,7 @@ const MONGO_PORT = encodeURIComponent(mongoPort);
 const ILCS_DB_STRING = `mongodb://${MONGO_USER}:${MONGO_PW}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}`;
 
 const connectDB = async () => {
+    let connection = null;
     try {
         console.log(`Connecting to ${ILCS_DB_STRING}`);
         await mongoose.connect(ILCS_DB_STRING);
@@ -20,10 +21,7 @@ const connectDB = async () => {
         console.log(error);
         process.exit(1);
     }
-    finally {
-        console.log('Connection to MongoDB closed');
-        mongoose.connection.close();
-    }
+    return connection;
 };
 
 export default connectDB;
