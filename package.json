@@ -1,7 +1,7 @@
 {
-  "name": "ilga-statute-compiler",
+  "name": "illini-compiler",
   "version": "1.0.0",
-  "description": "A web scraping project to collect the entirety of the Illinois Compiled Statutes (ILCS) from the Illinois General Assembly website (ilga.gov)",
+  "description": "A JavaScript and Node.js project for scraping and preprocessing legal data from official sources in Illinois, with the goal of making legal information more accessible and comprehensible. Powered by Puppeteer, Mongoose, and ChromaDB.",
   "main": "app.js",
   "type": "module",
   "scripts": {
