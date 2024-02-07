@@ -9,9 +9,11 @@ async function main() {
     const { chapters, topics } = await initILCSCollection();
     let GeneralProvisions = chapters[1];
     let { acts, subtopics } = await initActs(GeneralProvisions);
-    // console.log(acts);
-    console.log(acts);
-    console.log(subtopics);
+
+    let Act1 = acts[0];
+    let sections = await initSections(Act1);
+    console.log(sections);
+
     close();
 }
 

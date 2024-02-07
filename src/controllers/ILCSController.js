@@ -3,12 +3,12 @@ import ILCSModelFactory from "../services/ILCSModelFactory.js";
 import readline from "readline";
 import connectDB from "./connectDB.js";
 
-// const rl = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout
-// });
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-const { getNewChaptersArray, getNewTopicsArray, getNewActsArray, getNewSubtopicsArray } = ILCSModelFactory;
+const { getNewChaptersArray, getNewTopicsArray, getNewActsArray, getNewSubtopicsArray, getNewSectionsArray } = ILCSModelFactory;
 const crawler = await initILCSCrawler();
 
 async function initILCSCollection() {

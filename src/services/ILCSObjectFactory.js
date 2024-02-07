@@ -123,7 +123,13 @@ function getNewActsArray(actIndexString) {
 function getNewSection(section) {
     section = section.split(NL).map(el => normalizeNbsp(el).trim()).filter(el => el !== '');
     const header = parseSectionHeader(section[0]);
-    const source = parseSectionSource(section[section.length - 1]);
+    let source = '';
+    if(section.length > 2) {
+        let sourceLine = section[section.length - 1];
+        if (sourceLine.includes('Source')) {
+            source = parseSectionSource(sourceLine);
+        }
+    }
     const text = parseSectionText(section);
     return { header, text, source };
 }

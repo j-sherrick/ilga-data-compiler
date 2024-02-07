@@ -12,26 +12,6 @@
  * - `get chapters()`: A getter method that returns the `_index` property.
  * - `getActsFromUrl(url)`: A method that navigates to a given URL and extracts the acts from the page.
  * 
- * @example
- * import puppeteer from 'puppeteer';
- * import ILCSCrawler from './ILCSCrawler.js';
- * 
- * async function main() {
- *     const browser = await puppeteer.launch();
- *     const index = ['Chapter 1', 'Chapter 2', 'Chapter 3']; // Replace with your actual index
- * 
- *     const crawler = new ILCSCrawler(browser, index);
- * 
- *     for (const chapter of crawler.chapters) {
- *         console.log(`Crawling ${chapter}...`);
- *         const acts = await crawler.getActsFromUrl(`${ILCSCrawler.BASE_URL}/${chapter}`);
- *         console.log(acts);
- *     }
- * 
- *     await browser.close();
- * }
- * 
- * main().catch(console.error);
  */
 
 import puppeteer, { ElementHandle, Page } from 'puppeteer';
