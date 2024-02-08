@@ -8,7 +8,7 @@ async function main() {
     const indexSaved = controller.saveILCSTopLevelIndex(chapters, topics);
     if (indexSaved) {
         for (const chapter of chapters) {
-            let actsIndex = controller.initActs(chapter);
+            let actsIndex = controller.initActs(chapter, true);
             let actsSaved = controller.saveILCSActs(actsIndex);
             if (actsIndex.subtopics) {
                 controller.saveILCSSubtopics(actsIndex.subtopics);

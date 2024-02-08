@@ -5,23 +5,6 @@
  * These objects represent the Illinois Compiled Statutes' (ILCS) numbering scheme broken down into components such as Chapters, Acts, and Topics, and can be used for building their corresponding Mongoose models.
  * Each function takes in a raw string and returns a new object with parsed data.
  * 
- * @example shows how an initial ILCS index string is transformed into an array of chapter objects.
- * 
- * import puppeteer from 'puppeteer';
- * import { getILCSIndexString } from './ILCSExtractor.js';
- * import { UL_CHILDREN, TITLE, HREF, TOPIC, NL } from './constants/strings.js';
- * import ILCSObjectFactory from './ILCSObjectFactory.js';
- * 
- * const BASE_URL = 'https://www.ilga.gov/legislation/ilcs/ilcs.asp';
- * 
- * const browser = await puppeteer.launch();
- * const basePage = await browser.newPage();
- * await basePage.goto( BASE_URL );
- * 
- * let chapters = await basePage.$$eval( UL_CHILDREN, getILCSIndexString, TITLE, HREF, TOPIC, NL );
- * chapters = ILCSObjectFactory.getNewChaptersArray( chapters );
- * 
- * console.log( chapters );
  */
 
 import { parseActPrefix, parseActSubtopic, parseActTitle } from './utils/actUtils.js';
@@ -31,37 +14,32 @@ import { normalizeNewlines, normalizeNbsp } from './utils/stringUtils.js';
 import { NL, SP, TITLE, TOPIC, HREF, TOKEN, SERIES_NAMES, SERIES_NUMBERS } from './constants/strings.js';
 
 
-/**
- * Gets a new chapter object from the raw string returned by the ILCSExtractor.
- * 
- * @param { String } chptString - The raw string to parse.
- * 
- * @returns { Object } chapter - The parsed chapter object.
- * @property { String } chapter.number - String representation of the chapter's number.
- * @property { String } chapter.title - The chapter's title.
- * @property { Object } chapter.topic - The chapter's topic.
- * @property { String } chapter.topic.series - The chapter's topic series number.
- * @property { String } chapter.topic.name - The chapter's topic name.
- * @property { String } chapter.url - The chapter's url.
- */
-function getNewChapter(chptString) {
-    const chapterArray = chptString.split(NL);
-    let chapter = {};
-    for (const line of chapterArray) {
-        if (line.includes(TITLE)) {
-            chapter.number = parseChapterNumber(line);
-            chapter.title = parseChapterTitle(line, chapter.number);
-        }
-        else if (line.includes(TOPIC)) {
-            chapter.topic = getNewTopic(line);
-        }
-        else if (line.includes(HREF)) {
-            chapter.url = line.split(HREF)[1];
-        }
-    }
-    return chapter;
-}
 
+/**
+ * @typedef { Object } Topic
+ * @property { String } series - The topic's series number.
+ * @property { String } name - The topic's name.
+ * 
+ * 
+ * @typedef { Object } Chapter
+ * @property { String } number - String representation of the chapter's number.
+ * @property { String } title - The chapter's title.
+ * @property { Topic } topic - The chapter's topic.
+ * @property { String } url - The chapter's url.
+ * 
+ * @typedef { Object } Act
+ * @property { String } prefix - The act's prefix.
+ * @property { String } title - The act's title.
+ * @property { String } url - The act's url.
+ * @property { Subtopic } subtopic - The act's subtopic.
+ * @property { String } subtopic.name - The subtopic's name.
+ */
+
+/**
+ * 
+ * @param {*} topicString 
+ * @returns 
+ */
 function getNewTopic(topicString) {
     let topic = {};
     for (let i = 0; i < SERIES_NAMES.length; i++) {
@@ -72,6 +50,34 @@ function getNewTopic(topicString) {
         }
     }
 }
+
+
+
+
+/**
+ * Parses the raw string returned by {@link ILCSExtractor} into a new {@link Chapter} object.
+ * 
+ * @param { String } chptString - The raw string to parse.
+ * @returns { Chapter } chapter - The parsed chapter object.
+ */
+function getNewChapter(chptString) {
+    const chapterArray = chptString.split(NL);
+    let chapter = {};
+    for (const line of chapterArray) {
+        if (line.includes(TITLE)) {
+            chapter.number = parseChapterNumber(line);
+            chapter.title = parseChapterTitle(line, chapter.number);
+        }
+        else if (line.includes(HREF)) {
+            chapter.url = line.split(HREF)[1];
+        }
+        else if (line.includes(TOPIC)) {
+            chapter.topic = getNewTopic(line);
+        }
+    }
+    return chapter;
+}
+
 
 function getNewChaptersArray(chapterIndexString) {
     const chapterIndexArray = chapterIndexString.split(NL + NL);
