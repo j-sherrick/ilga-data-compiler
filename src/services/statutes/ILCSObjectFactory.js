@@ -16,29 +16,39 @@ import { NL, SP, TITLE, TOPIC, HREF, TOKEN, SERIES_NAMES, SERIES_NUMBERS } from 
 
 
 /**
- * @typedef { Object } Topic
- * @property { String } series - The topic's series number.
- * @property { String } name - The topic's name.
+ * @typedef {Object} Topic
  * 
+ * @property {String} series - The topic's series number.
+ * @property {String} name - The topic's name.
  * 
- * @typedef { Object } Chapter
- * @property { String } number - String representation of the chapter's number.
- * @property { String } title - The chapter's title.
- * @property { Topic } topic - The chapter's topic.
- * @property { String } url - The chapter's url.
- * 
- * @typedef { Object } Act
- * @property { String } prefix - The act's prefix.
- * @property { String } title - The act's title.
- * @property { String } url - The act's url.
- * @property { Subtopic } subtopic - The act's subtopic.
- * @property { String } subtopic.name - The subtopic's name.
  */
 
 /**
+ * @typedef {Object} Chapter
  * 
- * @param {*} topicString 
- * @returns 
+ * @property {String} number - String representation of the chapter's number.
+ * @property {String} title - The chapter's title.
+ * @property {Topic} topic - The chapter's topic.
+ * @property {String} url - The chapter's url.
+*/
+
+/**
+ * @typedef {Object} Act
+ * 
+ * @property {String} prefix - The act's prefix.
+ * @property {String} title - The act's title.
+ * @property {String} url - The act's url.
+ * @property {Subtopic} subtopic - The act's subtopic.
+ * @property {String} subtopic.name - The subtopic's name.
+ */
+
+
+
+/**
+ * Parses the formatted string returned by {@link ILCSExtractor} into a new {@link Topic} object.
+ * 
+ * @param {String} topicString - The formatted string to parse
+ * @returns {Topic} topic - The parsed topic object.
  */
 function getNewTopic(topicString) {
     let topic = {};
@@ -57,8 +67,8 @@ function getNewTopic(topicString) {
 /**
  * Parses the raw string returned by {@link ILCSExtractor} into a new {@link Chapter} object.
  * 
- * @param { String } chptString - The raw string to parse.
- * @returns { Chapter } chapter - The parsed chapter object.
+ * @param {String} chptString - The raw string to parse.
+ * @returns {Chapter} chapter - The parsed chapter object.
  */
 function getNewChapter(chptString) {
     const chapterArray = chptString.split(NL);
@@ -78,7 +88,11 @@ function getNewChapter(chptString) {
     return chapter;
 }
 
-
+/**
+ * 
+ * @param {String} chapterIndexString - The formatted string to parse.
+ * @returns {Chapter[]} chapters - An array of parsed chapter objects.
+ */
 function getNewChaptersArray(chapterIndexString) {
     const chapterIndexArray = chapterIndexString.split(NL + NL);
     let chapters = [];

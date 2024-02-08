@@ -10,8 +10,8 @@
  * - `getNewSectionsArray(sections, actId)`: Creates an array of new Section models from raw sections data and an Act ID.
  */
 
-import { Section, Act, Subtopic } from '../models/ILCSActSchemas.js';
-import { Chapter, Topic } from '../models/ILCSChapterSchemas.js';
+import { Section, Act, Subtopic } from '../../models/ILCSSchemas/ILCSActSchemas.js';
+import { Chapter, Topic } from '../../models/ILCSSchemas/ILCSChapterSchemas.js';
 
 function getNewSection(section, actId) {
     const newSection = new Section({

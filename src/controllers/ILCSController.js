@@ -1,10 +1,10 @@
-import { initILCSCrawler } from "../services/ILCSCrawler.js";
-import { Chapter, Topic } from "../models/ILCSChapterSchemas.js";
-import { Act, Subtopic, Section } from "../models/ILCSActSchemas.js";
-import ILCSModelFactory from "../services/ILCSModelFactory.js";
+import { initILCSCrawler } from "../services/statutes/ILCSCrawler.js";
+import { Chapter, Topic } from "../models/ILCSSchemas/ILCSChapterSchemas.js";
+import { Act, Subtopic, Section } from "../models/ILCSSchemas/ILCSActSchemas.js";
+import ILCSModelFactory from "../services/statutes/ILCSModelFactory.js";
 import mongoose from "mongoose";
 import readline from "readline";
-import connectDB from "./connectDB.js";
+import connectDB from "./connectILCS.js";
 
 const rl = readline.createInterface({
     input: process.stdin,
