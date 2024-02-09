@@ -65,9 +65,9 @@ function getNewTopic(topicString) {
 
 
 /**
- * Parses the raw string returned by {@link ILCSExtractor} into a new {@link Chapter} object.
+ * This function parses the raw string returned by {@link ILCSExtractor} into a new {@link Chapter} object.
  * 
- * @param {String} chptString - The raw string to parse.
+ * @param {String} chptString - The formatted string to parse.
  * @returns {Chapter} chapter - The parsed chapter object.
  */
 function getNewChapter(chptString) {
@@ -89,6 +89,7 @@ function getNewChapter(chptString) {
 }
 
 /**
+ * This function parses a formatted string from {@link ILCSExtractor} and returns an array of {@link Chapter} objects.
  * 
  * @param {String} chapterIndexString - The formatted string to parse.
  * @returns {Chapter[]} chapters - An array of parsed chapter objects.
@@ -105,6 +106,12 @@ function getNewChaptersArray(chapterIndexString) {
     return chapters;
 }
 
+/**
+ * This function parses a formatted string from {@link ILCSExtractor} and returns a new {@link Act} object.
+ * 
+ * @param {String} act - The formatted string to parse.
+ * @returns {Act} parsedAct - The parsed act object.
+ */
 function getNewAct(act) {
     act = normalizeNewlines(act);
     act = act.split(NL);
@@ -129,6 +136,13 @@ function getNewAct(act) {
     return parsedAct;
 }
 
+
+/**
+ * This function parses a formatted string from {@link ILCSExtractor} and returns an array of {@link Act} objects.
+ * 
+ * @param {String} actIndexString - The formatted string to parse.
+ * @returns {Act[]} acts - An array of parsed act objects.
+ */
 function getNewActsArray(actIndexString) {
     const actIndexArray = actIndexString.split(NL + NL);
     let acts = [];
@@ -140,6 +154,12 @@ function getNewActsArray(actIndexString) {
     return acts;
 }
 
+/**
+ * This function parses a formatted string from {@link ILCSExtractor} and returns a new {@link Section} of text from an act.
+ * 
+ * @param {String} section - The formatted string to parse.
+ * @returns {Section} section - The parsed section object.
+ */
 function getNewSection(section) {
     section = section.split(NL).map(el => normalizeNbsp(el).trim()).filter(el => el !== '');
     const header = parseSectionHeader(section[0]);
@@ -154,6 +174,12 @@ function getNewSection(section) {
     return { header, text, source };
 }
 
+/**
+ * This function parses a formatted string from {@link ILCSExtractor} and returns an array of {@link Section} objects.
+ * 
+ * @param {String} act - The formatted string representing an act to parse. 
+ * @returns {Section[]} parsedSections - An array of parsed section objects. 
+ */
 function getNewSectionsArray(act) {
     const sections = act.split(TOKEN).filter( section => {
         return  section &&
@@ -169,7 +195,9 @@ function getNewSectionsArray(act) {
     return parsedSections
 }
 
-
+/**
+ * Default export for ILCSObjectFactory module.
+ */
 export default {
     getNewChapter,
     getNewChaptersArray,

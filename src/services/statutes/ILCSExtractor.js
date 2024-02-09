@@ -13,10 +13,10 @@ import { ENTIRE_ACT_LINK } from './constants/strings.js';
  * querySelectorAll call on 'td ul *' selector, and returns a formatted string representing the index of ILCS chapters.
  * 
  * @param {Element[]} ulChildren children of a UL element that may contain a list of chapters or acts
- * @param {String} TITLE string constant for formatting the title of a chapter or act
- * @param {String} HREF string constant for formatting the url to the page containing a chapter or act 
- * @param {String} TOPIC string constant for formatting the topic of a chapter or subtopic of an act.
- * @param {String} NL string constant for formatting a newline character
+ * @param {String} titleString string constant for formatting the title of a chapter or act
+ * @param {String} urlString string constant for formatting the url to the page containing a chapter or act 
+ * @param {String} topicString string constant for formatting the topic of a chapter or subtopic of an act.
+ * @param {String} nlChar string constant for formatting a newline character
  * @returns {String} chapterIndexString - The formatted string representing a list index of ILCS chapters or acts.
  * 
  */

@@ -5,32 +5,38 @@ import controller from './controllers/ILCSController.js';
 
 async function main() {
     const { chapters, topics } = await controller.initILCSCollection();
-    const indexSaved = controller.saveILCSTopLevelIndex(chapters, topics);
+    const indexSaved = await controller.saveILCSTopLevelIndex(chapters, topics, true, true);
     if (indexSaved) {
         for (const chapter of chapters) {
-            let actsIndex = controller.initActs(chapter, true);
-            let actsSaved = controller.saveILCSActs(actsIndex);
+            let actsIndex = controller.initActs(chapter);
+            let actsSaved = await controller.saveILCSActs(actsIndex, true);
             if (actsIndex.subtopics) {
-                controller.saveILCSSubtopics(actsIndex.subtopics);
+                await controller.saveILCSSubtopics(actsIndex.subtopics, true);
             }
             if(actsSaved) {
+
                 console.log(`Saved act index for CHAPTER ${chapter.number} ${chapter.title}`);
+
                 for (const act of actsIndex.acts) {
                     let repealed = act.title.toLowercase.includes('repealed');
                     if(!repealed) {
                         let sectionsIndex = controller.initSections(act);
-                        controller.saveILCSActText(sectionsIndex);
+                        await controller.saveILCSActText(sectionsIndex, true);
+
                         console.log(`Saved ${chapter.number} ILCS ${act.prefix}/    ${act.title}`);
+
                     }
                     else {
+
                         console.log(`${chapter.number} ILCS ${act.prefix}/    has been repealed. Skipping...`)
+
                     }
                 }
             }
         }
     }
 
-    close();
+    controller.close();
 }
 
-await main();
+main();

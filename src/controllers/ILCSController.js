@@ -13,7 +13,7 @@ const rl = readline.createInterface({
 
 const crawler = await initILCSCrawler();
 
-const ilcsCollection = connectDB();
+const ilcsCollection = await connectDB();
 
 /**
  * Saves the initial top level index of {@link Chapter} and {@link Topic} documents to the ILCS database.
@@ -27,8 +27,7 @@ const ilcsCollection = connectDB();
  */
 async function saveILCSTopLevelIndex(chapters, topics, resetChapters = false, resetTopics = false) {
     console.log(`${chapters.length} chapters and ${topics.length} topics have been initialized.`);
-    let save = await rl.question("Do you want to save the top level index of the ILCS to the database? (yes/no) ");
-    save = save.trim().toLowerCase();
+    let save = await rl.question("Do you want to save the top level index of the ILCS to the database? (yes/no)\n");
     save = (save === "yes" || save === 'y') ? true : false;
     if (save) {
         try {
