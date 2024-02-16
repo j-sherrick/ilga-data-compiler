@@ -16,17 +16,10 @@ The Illini Compiler project is an endeavor leveraging modern JavaScript and Node
 - [Puppeteer](https://pptr.dev/)
 - [Mongoose](https://mongoosejs.com/)
 - [MongoDB Community Edition](https://www.mongodb.com/try/download/community)
+- [ChromaDB](https://www.trychroma.com/)
 
-The critical first stage in this process is facilitated by Mongoose, used to preprocess the scraped data into structured document Models and save to MongoDB. This step ensures that our data is optimized, organized, and ready for further analysis and processing.
+The Illini Compiler project embarks on the challenge of making legal information more accessible, starting with the ethical extraction of legal documents from the web. Utilizing Puppeteer, this initiative adopts a browser-like approach for data scraping, aligning with the intended use of websites and ensuring a respectful interaction with online resources. This step sets the foundation for data collection, emphasizing both efficiency and ethical considerations.
 
-As our project progresses, we will begin transforming the structured data into a vector database using ChromaDB. This transition will open up new avenues for legal insights and analysis using Retrieval Augemented Generation, and LLMs fine-tuned only on specific portions of enormous collections of documents, such as the Administrative Code.
+Following data extraction, the project transitions to organizing and structuring the collected information. Mongoose plays a pivotal role at this stage, processing the data into structured document models for storage in MongoDB. This organized approach prepares the groundwork for advanced analysis, facilitating the transformation of complex legal texts into a format ready for deeper exploration.
 
-The Illini Compiler project is not just about data extraction and preprocessing—it's a personal journey of making legal information more accessible and comprehensible for all, and to demonstrate the power of modern LLMs in augmenting the legal research process.
-
-## Built With
-
-- [NodeJS](https://github.com/nodejs/node?tab=readme-ov-file#table-of-contents)
-- [Puppeteer](https://pptr.dev/)
-- [ECMAScript 6](https://262.ecma-international.org/6.0/)
-- [Mongoose](https://mongoosejs.com/)
-- [MongoDB Community Edition](https://www.mongodb.com/try/download/community)
+The culmination of this effort is the conversion of structured data into vector embeddings within ChromaDB, paving the way for innovative legal analysis through Retrieval Augmented Generation technologies. This strategy enables the detailed examination and summarization of vast collections legal documents. The Illini Compiler project stands as a testament to the power of modern technology in enhancing the accessibility and comprehension of legal information, demonstrating a commitment to democratizing legal knowledge.

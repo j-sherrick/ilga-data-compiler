@@ -5,6 +5,7 @@ import ILCSModelFactory from "../services/statutes/ILCSModelFactory.js";
 import mongoose from "mongoose";
 import readline from "readline";
 import connectDB from "./connectILCS.js";
+import { resolve } from "path";
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -27,14 +28,18 @@ const ilcsCollection = await connectDB();
  */
 async function saveILCSTopLevelIndex(chapters, topics, resetChapters = false, resetTopics = false) {
     console.log(`${chapters.length} chapters and ${topics.length} topics have been initialized.`);
-    let save = await rl.question("Do you want to save the top level index of the ILCS to the database? (yes/no)\n");
-    save = (save === "yes" || save === 'y') ? true : false;
-    if (save) {
+    let confirmed = await new Promise(resolve => {
+        rl.question("Do you want to save the top level index of the ILCS to the database? (yes/no)\n", resolve);
+    });
+    
+    confirmed = confirmed.trim().toLowerCase();
+    confirmed = (confirmed === "yes" || confirmed === 'y') ? true : false;
+    if (confirmed) {
         try {
-            if(resetChapters) Chapter.deleteMany({}, err => console.error(err));
+            if(resetChapters) Chapter.deleteMany({});
             let chaptersResult = await Chapter.insertMany(chapters, { rawResult: true });
 
-            if (resetTopics) Topic.deleteMany({}, err => console.error(err));
+            if (resetTopics) Topic.deleteMany({});
             let topicsResult = await Topic.insertMany(topics, { rawResult: true });
 
             console.log(`Inserted ${chaptersResult.insertedCount} chapters and ${topicsResult.insertedCount} topics into the database.`);
@@ -45,14 +50,14 @@ async function saveILCSTopLevelIndex(chapters, topics, resetChapters = false, re
             else {
                 console.error("An unknown error occurred:", error.message);
             }
-            save = false;
+            confirmed = false;
         }
     }
     else {
         console.log("Controller did not perform save operation.");
-        save = false;
+        confirmed = false;
     }
-    return save;
+    return confirmed;
 }
 
 
@@ -69,7 +74,7 @@ async function saveILCSActs(acts, resetCollection = false) {
     save = (save === "yes" || save === 'y') ? true : false;
     if (save) {
         try {
-            if(resetCollection) Act.deleteMany({}, err => console.error(err));
+            if(resetCollection) Act.deleteMany({});
 
             let actsResult = await Act.insertMany(acts, { rawResult: true });
             console.log(`Inserted ${actsResult.insertedCount} acts into the database.`);
@@ -103,7 +108,7 @@ async function saveILCSSubtopics(subtopics, resetCollection = false) {
     if (save) {
         try {
             if(resetCollection) {
-                Subtopic.deleteMany({}, err => console.error(err));
+                Subtopic.deleteMany({});
             }
             let subtopicsResult = await Subtopic.insertMany(subtopics, { rawResult: true });
             console.log(`Inserted ${subtopicsResult.insertedCount} subtopics into the database.`);
