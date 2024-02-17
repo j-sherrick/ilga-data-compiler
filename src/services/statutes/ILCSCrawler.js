@@ -1,3 +1,5 @@
+// TODO: Change this to ILGACrawler and generalize it to crawl more than just the statutes.
+
 /**
  * @module ILCSCrawler
  * 
