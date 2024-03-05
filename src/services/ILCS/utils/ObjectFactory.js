@@ -7,11 +7,11 @@
  * 
  */
 
-import { parseActPrefix, parseActSubtopic, parseActTitle } from './utils/actUtils.js';
-import { parseChapterNumber, parseChapterTitle } from './utils/chapterUtils.js';
-import { parseSectionHeader, parseSectionSource, parseSectionText } from './utils/sectionUtils.js';
-import { normalizeNewlines, normalizeNbsp } from './utils/stringUtils.js';
-import { NL, SP, TITLE, TOPIC, HREF, TOKEN, SERIES_NAMES, SERIES_NUMBERS } from './constants/strings.js';
+import { parseActPrefix, parseActSubtopic, parseActTitle } from './actUtils.js';
+import { parseChapterNumber, parseChapterTitle } from './chapterUtils.js';
+import { parseSectionHeader, parseSectionSource, parseSectionText } from './sectionUtils.js';
+import { normalizeNewlines, normalizeNbsp } from './stringUtils.js';
+import { NL, SP, TITLE, TOPIC, HREF, TOKEN, SERIES_NAMES, SERIES_NUMBERS } from '../constants/strings.js';
 
 
 

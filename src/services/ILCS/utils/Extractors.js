@@ -5,8 +5,8 @@
  * These functions are used by the `ILCSCrawler` class to parse the crawled data.
  */
 
-import { TITLE, HREF, TOPIC, TOKEN, NL } from './constants/strings.js';
-import { ENTIRE_ACT_LINK } from './constants/strings.js';
+import { TITLE, HREF, TOPIC, TOKEN, NL } from '../constants/strings.js';
+import { ENTIRE_ACT_LINK } from '../constants/strings.js';
 
 /**
  * This function is a pageFunction to be evaluated in the browser context by Puppeteer. It expects the result of a
