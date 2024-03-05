@@ -1,12 +1,5 @@
-import mongoose, { Schema, Types } from 'mongoose';
-
-interface ITopic {
-    series: string,
-
-    name: string,
-
-    chapters: Types.ObjectId[];
-}
+import mongoose, { Schema } from 'mongoose';
+import { ITopic } from '../intefaces/ITopic';
 
 const TopicSchema = new Schema<ITopic>({
     series: {
@@ -21,8 +14,9 @@ const TopicSchema = new Schema<ITopic>({
     chapters: [{
         type: Schema.Types.ObjectId,
         ref: 'Chapter',
-        required: true
     }]
 });
 
 const Topic = mongoose.model('Topic', TopicSchema);
+
+export { Topic };

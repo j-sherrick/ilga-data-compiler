@@ -1,20 +1,5 @@
 import mongoose, { Schema, Types } from 'mongoose';
-
-interface IAct {
-    prefix: string,
-
-    title: string,
-
-    repealed: boolean;
-    
-    chapter: Types.ObjectId;
-    
-    url?: string,
-
-    sections?: Types.ObjectId[];
-
-    subtopic?: Types.ObjectId;
-}
+import { IAct } from '../intefaces/IAct';
 
 const ActSchema = new Schema<IAct>({
     prefix: {
@@ -32,7 +17,6 @@ const ActSchema = new Schema<IAct>({
     chapter: {
         type: Schema.Types.ObjectId,
         ref: 'Chapter',
-        required: true
     },
 
     sections: [{
@@ -48,4 +32,4 @@ const ActSchema = new Schema<IAct>({
 
 const Act = mongoose.model('Act', ActSchema);
 
-export { Act, IAct };
+export { Act };

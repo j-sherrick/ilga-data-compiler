@@ -1,17 +1,5 @@
 import mongoose, { Schema, Types } from 'mongoose';
-
-interface ISection {
-    header: {
-        number: string,
-        reference?: string
-    },
-
-    text: string,
-
-    source?: string,
-
-    act: Types.ObjectId;
-}
+import { ISection } from '../intefaces/ISection';
 
 const SectionSchema = new Schema<ISection>({
     header: {
@@ -33,10 +21,9 @@ const SectionSchema = new Schema<ISection>({
     act: {
         type: Schema.Types.ObjectId,
         ref: 'Act',
-        required: true
     }
 });
 
 const Section = mongoose.model('Section', SectionSchema);
 
-export { Section, ISection };
+export { Section };
