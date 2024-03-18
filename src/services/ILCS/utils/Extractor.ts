@@ -1,24 +1,5 @@
-/**
- * @module ILCSExtractor
- * 
- * @description This module exports functions that extract data from the HTML of the Illinois Compiled Statutes (ILCS) website.
- * These functions are used by the `ILCSCrawler` class to parse the crawled data.
- */
-
 import { TITLE, HREF, TOPIC, TOKEN, NL } from '../constants/strings.js';
-import { ENTIRE_ACT_LINK } from '../constants/strings.js';
-
-/**
- * This function is a pageFunction to be evaluated in the browser context by Puppeteer. It expects the result of a
- * querySelectorAll call on 'td ul *' selector, and returns a formatted string representing the index of ILCS chapters.
- * 
- * @param ulChildren children of a UL element that may contain a list of chapters or acts
- * @param titleString string constant for formatting the title of a chapter or act
- * @param urlString string constant for formatting the url to the page containing a chapter or act 
- * @param topicString string constant for formatting the topic of a chapter or subtopic of an act.
- * @param nlChar string constant for formatting a newline character
- * @returns a formatted string representing a list index of ILCS chapters or acts.
- */
+import { 
 function getILCSIndexString(
     ulChildren: Element[],
     titleString: string,

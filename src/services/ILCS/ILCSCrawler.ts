@@ -18,6 +18,10 @@ export class ILCSCrawler {
         await this.page.goto(ILCSCrawler.BASE_URL);
     }
 
+    private async initUrlList(): Promise<void> {
+        
+    }
+
     public static async create(): Promise<ILCSCrawler> {
         const crawler = new ILCSCrawler();
         await crawler.initialize();
