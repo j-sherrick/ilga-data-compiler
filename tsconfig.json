@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@interfaces/*": ["./src/schemas/interfaces/*"],
+            "@models/*": ["./src/schemas/models/*"],
+            "@services/*": ["./src/services/*"]
+        }
+    }
+}

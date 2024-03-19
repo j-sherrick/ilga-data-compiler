@@ -1,29 +1,36 @@
-import { TITLE, HREF, TOPIC, TOKEN, NL } from '../constants/strings.js';
-import { 
-function getILCSIndexString(
-    ulChildren: Element[],
-    titleString: string,
-    urlString: string,
-    topicString: string,
-    nlChar: string):
-    string {
+import { IChapter } from "../../../schemas/ILCS/intefaces/IChapter";
 
-    let chapterIndexString  = '';
-    let currentTopic = '';
-    for(const ulChild of ulChildren) {
-        if ((ulChild.tagName === 'DIV' || ulChild.tagName === 'P') && ulChild.innerText !== '') {
-            // trim() is always called on the innerText String to remove unexpected newlines
-            currentTopic = ulChild.innerText.trim();
+export class Extractor {
+
+    public static returnChapterList(html: HTMLElement[]): string {
+
+        let chapters: object[] = [];
+        let currentTopic = '';
+        for(const el of html) {
+            if ((el.tagName === 'DIV' || el.tagName === 'P') && el.innerText !== '') {
+                currentTopic = el.innerText.trim();
+            }
+            else if (el.tagName === 'LI' && el.innerText !== '') {
+                const link = el.querySelector('a');
+                const linkHref = link ? link.href : '';
+                chapters.push({
+                    title: el.innerText.trim(),
+                    topic: currentTopic,
+                    url: linkHref
+                });
+            }
         }
-        else if (ulChild.tagName === 'LI' && ulChild.innerText !== '') {
-            chapterIndexString += titleString + ulChild.innerText.trim() + nlChar;
-            chapterIndexString += topicString + currentTopic + nlChar;
-            chapterIndexString += urlString + ulChild.querySelector('a').href + nlChar + nlChar;
-        }
+    
+        return JSON.stringify(chapters);
     }
 
-    return chapterIndexString;
+    public static returnChapterContents(html: HTMLElement[]): string {
+
+
+        return '';
+    }
 }
+
 
 
 /**
@@ -36,7 +43,7 @@ function getILCSIndexString(
  * @returns a formatted string representing the entire text of an act, with sections separated by tokenString
  */
 function getILCSAct(
-    pChildren: Element[],
+    pChildren: HTMLElement[],
     tokenString: string):
     string {
 
@@ -60,7 +67,7 @@ function getILCSAct(
  * @returns a string with the href attribute found in the link to the entire act, if it exists, or an empty string if it doesn't
  */
 function hasEntireAct(
-    aNodes: Element[],
+    aNodes: HTMLAnchorElement[],
     viewEntireAct: string):
     string {
         
@@ -76,6 +83,5 @@ function hasEntireAct(
 
 export { 
     getILCSAct,
-    getILCSIndexString,
     hasEntireAct
  }
