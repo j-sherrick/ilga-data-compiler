@@ -37,3 +37,18 @@ export class ILCSCrawler {
         await this.browser.close();
     }
 }
+
+function hasEntireAct(
+    aNodes: HTMLAnchorElement[],
+    viewEntireAct: string):
+    string {
+        
+    let href = '';
+    for (const aNode of aNodes) {
+        if (aNode.innerText.toLowerCase().includes(viewEntireAct)) {
+            href = aNode.href;
+            break;
+        }
+    }
+    return href;
+}
