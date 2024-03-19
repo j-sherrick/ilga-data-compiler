@@ -2,9 +2,9 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "@interfaces/*": ["./src/schemas/interfaces/*"],
-            "@models/*": ["./src/schemas/models/*"],
-            "@services/*": ["./src/services/*"]
+            "@interfaces/*": ["./src/schemas/ILCS/interfaces/*"],
+            "@models/*": ["./src/schemas/ILCS/models/*"],
+            "@services/*": ["./src/services/ILCS/*"]
         }
     }
 }

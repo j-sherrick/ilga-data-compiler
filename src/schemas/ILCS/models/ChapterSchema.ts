@@ -1,16 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
-import { IChapter } from '../intefaces/IChapter';
+import { IChapter } from '../interfaces/IChapter';
 
 const ChapterSchema = new Schema<IChapter>({
-    number: {
-        type: String,
-        required: true
-    },
-
-    url: {
-        type: String,
-        required: true
-    },
 
     title: {
         type: String,
@@ -19,7 +10,17 @@ const ChapterSchema = new Schema<IChapter>({
 
     topic: {
         type: Schema.Types.ObjectId,
-        ref: 'Topic'
+        ref: 'Topic',
+        required: true
+    },
+
+    url: {
+        type: String,
+        required: true
+    },
+    
+    number: {
+        type: String,
     },
     
     acts: [{

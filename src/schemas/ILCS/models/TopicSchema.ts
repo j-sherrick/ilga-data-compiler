@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { ITopic } from '../intefaces/ITopic';
+import { ITopic } from '../interfaces/ITopic';
 
 const TopicSchema = new Schema<ITopic>({
     series: {

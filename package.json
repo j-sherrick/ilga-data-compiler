@@ -48,8 +48,8 @@
     "jest": "^29.7.0"
   },
   "_moduleAliases": {
-    "@interfaces": "./src/schemas/interfaces",
-    "@models": "./src/schemas/models",
-    "@services": "./src/services"
+    "@interfaces": "./src/schemas/ILCS/interfaces",
+    "@models": "./src/schemas/ILCS/models",
+    "@services": "./src/ILCS/services"
   }
 }

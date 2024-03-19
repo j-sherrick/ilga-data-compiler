@@ -1,18 +1,23 @@
 import mongoose, { Schema, Types } from 'mongoose';
-import { IAct } from '../intefaces/IAct';
+import { IAct } from '../interfaces/IAct';
 
 const ActSchema = new Schema<IAct>({
-    prefix: {
-        type: String,
-        required: true
-    },
-
     title: {
         type: String,
         required: true
     },
-
-    url: String,
+    
+    url: {
+        type: String
+    },
+    
+    prefix: {
+        type: String,
+    },
+    
+    repealed: {
+        type: Boolean
+    },
 
     chapter: {
         type: Schema.Types.ObjectId,

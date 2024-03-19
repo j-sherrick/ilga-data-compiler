@@ -1,33 +1,58 @@
-import { IChapter } from "../../../schemas/ILCS/intefaces/IChapter";
+import { IChapter } from '@interfaces/IChapter';
+import { IAct } from '@interfaces/IAct';
+import { ISection } from '@interfaces/ISection';
 
 export class Extractor {
 
-    public static returnChapterList(html: HTMLElement[]): string {
-
-        let chapters: object[] = [];
+    private static extractFromHtml(html: HTMLElement[], hasTopic: boolean): Array<IChapter | IAct> {
+        let items: Array<IChapter | IAct> = [];
         let currentTopic = '';
         for(const el of html) {
             if ((el.tagName === 'DIV' || el.tagName === 'P') && el.innerText !== '') {
                 currentTopic = el.innerText.trim();
-            }
-            else if (el.tagName === 'LI' && el.innerText !== '') {
+            } else if (el.tagName === 'LI' && el.innerText !== '') {
                 const link = el.querySelector('a');
                 const linkHref = link ? link.href : '';
-                chapters.push({
-                    title: el.innerText.trim(),
-                    topic: currentTopic,
-                    url: linkHref
-                });
+                let item: IChapter | IAct = {title: el.innerText.trim(), url: linkHref};
+                if (hasTopic) {
+                    item = { ...item, topic: currentTopic }; // For chapters
+                } else if (currentTopic) {
+                    item = { ...item, subtopic: currentTopic }; // For acts, if a topic exists
+                }
+                items.push(item);
             }
         }
-    
+        return items;
+    }
+
+    public static chaptersFromHtml(html: HTMLElement[]): string {
+        const chapters = Extractor.extractFromHtml(html, true);
         return JSON.stringify(chapters);
     }
 
-    public static returnChapterContents(html: HTMLElement[]): string {
+    public static actsFromHtml(html: HTMLElement[]): string {
+        const acts = Extractor.extractFromHtml(html, false);
+        return JSON.stringify(acts);
+    }
 
+    public static textFromActHtml(html: HTMLElement[]): string {
+        let sections: ISection[] = [];
+        for(const el of html) {
+            let sectionTitle = '';
+            let sectionText = '';
+            if (el.tagName === 'TITLE') {
+                sectionTitle = el.innerText;
+            }
+            else if (el.tagName === 'TABLE') {
+                sectionText = el.innerText;
+                sections.push({
+                    title: sectionTitle,
+                    text: sectionText
+                });
+            }
+        }
 
-        return '';
+        return JSON.stringify(sections);
     }
 }
 

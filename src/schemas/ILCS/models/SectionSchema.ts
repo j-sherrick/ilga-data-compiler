@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from 'mongoose';
-import { ISection } from '../intefaces/ISection';
+import { ISection } from '../interfaces/ISection';
 
 const SectionSchema = new Schema<ISection>({
     header: {

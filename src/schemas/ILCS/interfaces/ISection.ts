@@ -1,10 +1,7 @@
 import { Types } from "mongoose";
 
 export interface ISection {
-    header: {
-        number: string,
-        reference?: string
-    },
+    title: string,
 
     text: string,
 

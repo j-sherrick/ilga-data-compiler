@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from "mongoose";
-import { ISubtopic } from "../intefaces/ISubtopic";
+import { ISubtopic } from "../interfaces/ISubtopic";
 
 const SubtopicSchema = new Schema<ISubtopic>({
     name: {

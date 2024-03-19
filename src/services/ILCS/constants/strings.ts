@@ -1,13 +1,3 @@
-export const SP = ' ';
-export const NL = '\n';
-
-// keywords returned by the extractors
-export const TITLE = 'title:';
-export const HREF = 'url:';
-export const TOPIC = 'topic:';
-export const TOKEN = '<TABLE_END>';
-export const ENTIRE_ACT_LINK = 'entire act';
-
 // static statute data - series numbers correspond to series names by index
 export const SERIES_NUMBERS = [
         '00',
