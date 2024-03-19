@@ -1,6 +1,6 @@
-import { IChapter } from '@interfaces/IChapter';
-import { IAct } from '@interfaces/IAct';
-import { ISection } from '@interfaces/ISection';
+import { IChapter } from '@interfaces/IChapter.js';
+import { IAct } from '@interfaces/IAct.js';
+import { ISection } from '@interfaces/ISection.js';
 
 export class Extractor {
 

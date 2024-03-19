@@ -5,7 +5,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "test": "node src/app.js"
+    "test:extractor": "node --trace-warnings --loader ts-node/esm --inspect ./tests/unit/extractorTest.ts"
   },
   "repository": {
     "type": "git",
