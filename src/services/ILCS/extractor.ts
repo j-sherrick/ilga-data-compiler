@@ -4,12 +4,14 @@ import { ISection } from '@interfaces/ISection.js';
 
 export class Extractor {
    public static getChapterListing(html: Element[]): string {
-      const chapters = Extractor.getListing(this.assertHTMLElements(html), true);
+      const chpTemp = this.assertHTMLElements(html);
+      const chapters = this.getListing(chpTemp, true);
       return JSON.stringify(chapters);
    }
 
    public static getActListing(html: Element[]): string {
-      const acts = Extractor.getListing(this.assertHTMLElements(html), false);
+      const actTemp = this.assertHTMLElements(html);
+      const acts = this.getListing(actTemp, true);
       return JSON.stringify(acts);
    }
 

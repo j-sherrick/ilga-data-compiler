@@ -1,3 +1,5 @@
+import 'module-alias/register';
+
 import puppeteer from 'puppeteer';
 import { Browser, HTTPResponse, Page } from 'puppeteer';
 import { Extractor } from '@services/extractor.js';

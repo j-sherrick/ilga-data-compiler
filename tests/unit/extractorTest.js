@@ -1,3 +1,4 @@
+require('module-alias/register');
 import puppeteer from 'puppeteer';
 import { Extractor } from '@services/extractor.js';
 import { P_CHILDREN } from '@services/constants/strings.js';

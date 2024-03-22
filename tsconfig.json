@@ -2,11 +2,11 @@
    "compilerOptions": {
       "module": "nodenext",
       "target": "es2020",
-      "baseUrl": ".",
+      "baseUrl": "./src",
       "paths": {
-         "@interfaces/*": ["./src/schemas/ILCS/interfaces/*"],
-         "@models/*": ["./src/schemas/ILCS/models/*"],
-         "@services/*": ["./src/services/ILCS/*"]
+         "@interfaces/*": ["schemas/ILCS/interfaces/*"],
+         "@models/*": ["schemas/ILCS/models/*"],
+         "@services/*": ["services/ILCS/*"]
       },
       "esModuleInterop": true,
       "forceConsistentCasingInFileNames": true,
