@@ -1,18 +1,18 @@
 {
-    "compilerOptions": {
-        "target": "ESNext",
-        "module": "NodeNext",
-        "baseUrl": ".",
-        "paths": {
-            "@interfaces/*": ["./src/schemas/ILCS/interfaces/*"],
-            "@models/*": ["./src/schemas/ILCS/models/*"],
-            "@services/*": ["./src/services/ILCS/*"]
-        },
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "strict": true,
-        "skipLibCheck": true
-    },
-    "include": ["src/**/*", "tests/**/*"],
-    "exclude": ["node_modules"]
+   "compilerOptions": {
+      "module": "nodenext",
+      "target": "es2020",
+      "baseUrl": ".",
+      "paths": {
+         "@interfaces/*": ["./src/schemas/ILCS/interfaces/*"],
+         "@models/*": ["./src/schemas/ILCS/models/*"],
+         "@services/*": ["./src/services/ILCS/*"]
+      },
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "strict": true,
+      "skipLibCheck": true
+   },
+   "include": ["src/**/*", "tests/**/*"],
+   "exclude": ["node_modules"]
 }
