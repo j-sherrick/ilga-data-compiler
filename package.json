@@ -1,55 +1,55 @@
 {
-  "name": "illini-compiler",
-  "version": "1.0.0",
-  "description": "A JavaScript and Node.js project for scraping and preprocessing legal data from official sources in Illinois, with the goal of making legal information more accessible and comprehensible. Powered by Puppeteer, Mongoose, and ChromaDB.",
-  "main": "app.js",
-  "type": "module",
-  "scripts": {
-    "test:extractor": "node --trace-warnings --loader ts-node/esm --inspect ./tests/unit/extractorTest.ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/j-sherrick/ilga-statute-compiler.git"
-  },
-  "keywords": [
-    "puppeteer",
-    "nodejs",
-    "javascript",
-    "web-scraping",
-    "web-crawler",
-    "web",
-    "scraping",
-    "crawler",
-    "data",
-    "collection",
-    "summarization",
-    "illinois",
-    "legal",
-    "state",
-    "laws",
-    "statutes",
-    "public"
-  ],
-  "author": "Jason Sherrick",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/j-sherrick/ilga-statute-compiler/issues"
-  },
-  "homepage": "https://github.com/j-sherrick/ilga-statute-compiler#readme",
-  "dependencies": {
-    "dotenv": "^16.3.2",
-    "module-alias": "^2.2.3",
-    "mongoose": "^8.1.0",
-    "puppeteer": "^22.0.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
-  },
-  "devDependencies": {
-    "jest": "^29.7.0"
-  },
-  "_moduleAliases": {
-    "@interfaces": "./src/schemas/ILCS/interfaces",
-    "@models": "./src/schemas/ILCS/models",
-    "@services": "./src/ILCS/services"
-  }
+   "name": "illini-compiler",
+   "version": "1.0.0",
+   "description": "A JavaScript and Node.js project for scraping and preprocessing legal data from official sources in Illinois, with the goal of making legal information more accessible and comprehensible. Powered by Puppeteer, Mongoose, and ChromaDB.",
+   "main": "app.js",
+   "type": "module",
+   "scripts": {
+      "test:extractor": "tsx ./tests/unit/extractorTest.ts"
+   },
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/j-sherrick/ilga-statute-compiler.git"
+   },
+   "keywords": [
+      "puppeteer",
+      "nodejs",
+      "javascript",
+      "web-scraping",
+      "web-crawler",
+      "web",
+      "scraping",
+      "crawler",
+      "data",
+      "collection",
+      "summarization",
+      "illinois",
+      "legal",
+      "state",
+      "laws",
+      "statutes",
+      "public"
+   ],
+   "author": "Jason Sherrick",
+   "license": "MIT",
+   "bugs": {
+      "url": "https://github.com/j-sherrick/ilga-statute-compiler/issues"
+   },
+   "homepage": "https://github.com/j-sherrick/ilga-statute-compiler#readme",
+   "dependencies": {
+      "dotenv": "^16.3.2",
+      "module-alias": "^2.2.3",
+      "mongoose": "^8.1.0",
+      "puppeteer": "^22.0.0",
+      "typescript": "^5.3.3"
+   },
+   "devDependencies": {
+      "jest": "^29.7.0",
+      "tsx": "^4.7.1"
+   },
+   "_moduleAliases": {
+      "@interfaces": "./src/schemas/ILCS/interfaces",
+      "@models": "./src/schemas/ILCS/models",
+      "@services": "./src/ILCS/services"
+   }
 }
