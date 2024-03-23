@@ -5,6 +5,7 @@ import { Browser, HTTPResponse, Page } from 'puppeteer';
 import { Extractor } from '@services/extractor.js';
 import { UL_CHILDREN, P_CHILDREN } from '@services/constants/strings.js';
 import { Parser } from '@services/parser.js';
+import { ITopic } from '@interfaces/ITopic.js';
 
 // The Illinois Compiled Statutes main chapter listing
 const home = 'https://ilga.gov/legislation/ilcs/ilcs.asp';
@@ -35,8 +36,9 @@ async function testTopLevel(): Promise<void> {
       chapters = await page.$$eval(UL_CHILDREN, Extractor.getChapterListing);
       const iChapters = Parser.strToChapterArray(chapters);
       for (const chapter of iChapters) {
+         const topic: ITopic = chapter.topic as ITopic;
          console.log(
-            `TITLE: ${chapter.title}\nTOPIC: ${chapter.topic}\nURL: ${chapter.url}\n\n`
+            `CHAPTER ${chapter.number} ${chapter.title}\n\t- ${topic.name}\n\t- ${chapter.url}\n\n`
          );
       }
       if (!chapters) {

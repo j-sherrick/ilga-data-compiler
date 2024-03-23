@@ -1,14 +1,14 @@
-import { Types } from "mongoose";
+import { Types } from 'mongoose';
+import { ITopic } from './ITopic.js';
 
 export interface IChapter {
-    
-    title:string;
-    
-    topic:Types.ObjectId | string;
-    
-    url:string;
-    
-    number?:string;
-    
-    acts?:Types.ObjectId[];
+   title: string;
+
+   topic: Types.ObjectId | ITopic | string;
+
+   url: string;
+
+   number?: string;
+
+   acts?: Types.ObjectId[];
 }

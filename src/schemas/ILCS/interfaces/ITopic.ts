@@ -1,9 +1,9 @@
 import { Types } from 'mongoose';
 
 export interface ITopic {
-    series: string,
+   name: string;
 
-    name: string,
+   series: string;
 
-    chapters?: Types.ObjectId[];
+   chapters?: Types.ObjectId[];
 }
