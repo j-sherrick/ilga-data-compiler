@@ -3,7 +3,7 @@ import 'module-alias/register';
 import puppeteer from 'puppeteer';
 import { Browser, HTTPResponse, Page } from 'puppeteer';
 import { Extractor } from '@services/extractor.js';
-import { P_CHILDREN } from '@services/constants/strings.js';
+import { UL_CHILDREN } from '@services/constants/strings.js';
 
 // The Illinois Compiled Statutes main chapter listing
 const home = 'https://ilga.gov/legislation/ilcs/ilcs.asp';
@@ -18,7 +18,7 @@ const browser: Browser = await puppeteer.launch();
 const page: Page = await browser.newPage();
 
 async function testTopLevel(): Promise<void> {
-   let list: any = '';
+   let list = '';
    try {
       const ret: HTTPResponse | null = await page.goto(home);
       if (!ret) {
@@ -27,8 +27,9 @@ async function testTopLevel(): Promise<void> {
       if (!ret.ok()) {
          throw new Error(`Error loading page! Status code: ${ret.status()}`);
       }
-
-      list = await page.$$eval(P_CHILDREN, Extractor.getChapterListing);
+      console.log('HTTP response was good!');
+      list = await page.$$eval(UL_CHILDREN, Extractor.getChapterListing);
+      console.log(list);
       if (!list) {
          throw new Error(`Chapter listing was empty after retrieval!`);
       }
@@ -36,7 +37,7 @@ async function testTopLevel(): Promise<void> {
       console.error(err);
       return;
    } finally {
-      console.log(list);
+      console.log("That's all folks!");
    }
 }
 
