@@ -13,6 +13,6 @@
       "strict": true,
       "skipLibCheck": true
    },
-   "files": ["tests/unit/extractorTest.ts"],
+   "files": ["tests/unit/extractorTest.ts", "src/services/ILCS/parser.ts"],
    "exclude": ["node_modules"]
 }

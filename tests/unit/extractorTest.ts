@@ -4,6 +4,7 @@ import puppeteer from 'puppeteer';
 import { Browser, HTTPResponse, Page } from 'puppeteer';
 import { Extractor } from '@services/extractor.js';
 import { UL_CHILDREN, P_CHILDREN } from '@services/constants/strings.js';
+import { Parser } from '@services/parser.js';
 
 // The Illinois Compiled Statutes main chapter listing
 const home = 'https://ilga.gov/legislation/ilcs/ilcs.asp';
@@ -32,7 +33,12 @@ async function testTopLevel(): Promise<void> {
       }
       console.log('HTTP response was good!');
       chapters = await page.$$eval(UL_CHILDREN, Extractor.getChapterListing);
-      console.log(chapters);
+      const iChapters = Parser.strToChapterArray(chapters);
+      for (const chapter of iChapters) {
+         console.log(
+            `TITLE: ${chapter.title}\nTOPIC: ${chapter.topic}\nURL: ${chapter.url}\n\n`
+         );
+      }
       if (!chapters) {
          throw new Error(`Chapter listing was empty after retrieval!`);
       }
@@ -81,7 +87,10 @@ async function testActsNoSubtopics(): Promise<void> {
       }
       console.log('HTTP response was good!');
       acts = await page.$$eval(UL_CHILDREN, Extractor.getActListing);
-      console.log(acts);
+      const iActs = Parser.strToActArray(acts);
+      for (const act of iActs) {
+         console.log(`Title: ${act.title}\nURL: ${act.url}\n\n`);
+      }
       if (!acts) {
          throw new Error(`Chapter listing was empty after retrieval!`);
       }
@@ -116,9 +125,9 @@ async function testEntireAct(): Promise<void> {
    }
 }
 
-// await testTopLevel();
+await testTopLevel();
 // await testActsNoSubtopics();
 // await testActsWithSubtopics();
-await testEntireAct();
+// await testEntireAct();
 
 await browser.close();
