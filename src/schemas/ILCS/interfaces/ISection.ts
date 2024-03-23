@@ -1,11 +1,11 @@
-import { Types } from "mongoose";
+import { Types } from 'mongoose';
 
 export interface ISection {
-    title: string,
+   text: string;
 
-    text: string,
+   title?: string;
 
-    source?: string,
+   source?: string;
 
-    act?: Types.ObjectId;
+   act?: Types.ObjectId;
 }
