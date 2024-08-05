@@ -1,7 +1,7 @@
-import { IChapter } from '@interfaces/IChapter.js';
-import { IAct } from '@interfaces/IAct.js';
-import { ISection } from '@interfaces/ISection.js';
-import { ITopic } from '@interfaces/ITopic.js';
+import { IChapter } from 'models/ILCS/interfaces/IChapter.js';
+import { IAct } from 'models/ILCS/interfaces/IAct.js';
+import { ISection } from 'models/ILCS/interfaces/ISection.js';
+import { ITopic } from 'models/ILCS/interfaces/ITopic.js';
 
 export class Parser {
    private static CHAPTER_REGEX: RegExp = /\d{1,3}/;

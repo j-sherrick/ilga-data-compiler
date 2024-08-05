@@ -1,6 +1,6 @@
-import { IChapter } from '@interfaces/IChapter.js';
-import { IAct } from '@interfaces/IAct.js';
-import { ISection } from '@interfaces/ISection.js';
+import { IChapter } from 'models/ILCS/interfaces/IChapter.js';
+import { IAct } from 'models/ILCS/interfaces/IAct.js';
+import { ISection } from 'models/ILCS/interfaces/ISection.js';
 
 export class Extractor {
    public static getChapterListing(queryResults: Element[]): string {

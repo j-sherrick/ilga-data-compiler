@@ -4,15 +4,15 @@
       "target": "es2020",
       "baseUrl": "./src",
       "paths": {
-         "@interfaces/*": ["schemas/ILCS/interfaces/*"],
-         "@models/*": ["schemas/ILCS/models/*"],
-         "@services/*": ["services/ILCS/*"]
+         "@interfaces/*": ["models/ILCS/interfaces/*"],
+         "@models/*": ["models/ILCS/models/*"],
+         "@utlils/*": ["utils/ILCS/*"]
       },
       "esModuleInterop": true,
       "forceConsistentCasingInFileNames": true,
       "strict": true,
       "skipLibCheck": true
    },
-   "files": ["tests/unit/extractorTest.ts", "src/services/ILCS/parser.ts"],
+   "files": ["tests/unit/extractorTest.ts", "src/utils/ILCS/parser.ts"],
    "exclude": ["node_modules"]
 }

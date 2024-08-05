@@ -2,10 +2,10 @@ import 'module-alias/register';
 
 import puppeteer from 'puppeteer';
 import { Browser, HTTPResponse, Page } from 'puppeteer';
-import { Extractor } from '@services/extractor.js';
-import { UL_CHILDREN, P_CHILDREN } from '@services/constants/strings.js';
+import { Extractor } from '@utils/extractor.js';
+import { UL_CHILDREN, P_CHILDREN } from '@utils/constants/strings.js';
 import { Parser } from '@services/parser.js';
-import { ITopic } from '@interfaces/ITopic.js';
+import { ITopic } from 'models/ILCS/interfaces/ITopic.js';
 
 // The Illinois Compiled Statutes main chapter listing
 const home = 'https://ilga.gov/legislation/ilcs/ilcs.asp';
